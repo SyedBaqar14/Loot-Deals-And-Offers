@@ -27,12 +27,10 @@ class LatestOffers extends StatefulWidget {
 
 class _LatestOffersState extends State<LatestOffers> {
   static int page = 1;
-  static int min = 1;
   final List<Data> latestItems = [];
   late List<Object> dataAds; // will store both data + banner ads
   bool isLoading = false;
   bool firstFetch = true;
-  static int indexDeals = 0;
   static bool fetchMoreUpdatedProducts = false;
   ScrollController _scrollController = new ScrollController();
 
@@ -44,9 +42,6 @@ class _LatestOffersState extends State<LatestOffers> {
         print(value);
       } else if (value.status == "success") {
         print(value.status);
-        if (!firstFetch) {
-          min = value.totalItems as int;
-        }
         setState(() {
           // insert admob banner object in between the array list
           // var rm = Random();
@@ -220,19 +215,24 @@ class _LatestOffersState extends State<LatestOffers> {
     // update data and loading status
   }
 
-  String getDifference(DateTime date1, String date) {
-    print('date1 $date1');
-    print('date2 $date');
+  static DateTime date1 = DateTime.now();
+  String getDifference({required DateTime date1, required String date, required int index, required var productID, required var title}) {
+
+    print('$index) productID ($productID) => date1 $date1');
+    print('$index) productID ($productID) => date2 $date');
     var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
-    var date2 = inputFormat.parse(date);
-    print("minutes: ${date1.difference(date2).inMinutes}");
+    final date2 = inputFormat.parse(date);
     if (date1.difference(date2).inMinutes < 59) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inMinutes} mins");
       return "${date1.difference(date2).inMinutes} mins";
     } else if (date1.difference(date2).inHours <= 24) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inHours} hours");
       return "${date1.difference(date2).inHours} hours ";
     } else if (date1.difference(date2).inDays > 1) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} days");
       return "${date1.difference(date2).inDays} days";
     } else {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} day");
       return "${date1.difference(date2).inDays} day";
     }
   }
@@ -244,292 +244,304 @@ class _LatestOffersState extends State<LatestOffers> {
           color: Colors.grey.withOpacity(.2),
           child: firstFetch
               ? Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    Expanded(
-                      child: NotificationListener(
-                        onNotification: (ScrollNotification scrollInfo) {
-                          if (scrollInfo.metrics.pixels > 1200.0) {
-                            fetchMoreUpdatedProducts = true;
-                            print(
-                                "scrollInfo: ${scrollInfo.metrics.pixels}, true");
-                          }
-                          if (fetchMoreUpdatedProducts &&
-                              scrollInfo.metrics.pixels < 2.0) {
-                            print(
-                                "scrollInfo: ${scrollInfo.metrics.pixels}, fetchMoreUpdatedProducts");
-                            fetchMoreUpdatedProducts = false;
-                            Future.delayed(Duration(minutes: 3)).then((value) {
-                              if (scrollInfo.metrics.pixels <= 50.0) {
-                                fetchUpdatedDeals();
-                              }
-                            });
-                          }
-                          if (!isLoading &&
-                              scrollInfo.metrics.pixels ==
-                                  scrollInfo.metrics.maxScrollExtent) {
-                            // start loading data
-                            setState(() {
-                              isLoading = true;
-                            });
-                            _loadData();
-                          }
-                          return false;
-                        },
-                        child: StaggeredGridView.countBuilder(
-                          controller: _scrollController,
-                          itemCount: dataAds.length,
-                          shrinkWrap: true,
-                          primary: false,
-                          padding:
-                              const EdgeInsets.only(top: 0, left: 8, right: 8),
-                          // childAspectRatio:
-                          // getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
-                          staggeredTileBuilder: (int index) {
-                            if (dataAds[index] is Data) {
-                              print("dataAds[index] is Data: $index");
-                              indexDeals = index;
-                              return const StaggeredTile.count(1, 2.3);
-                            } else {
-                              print("dataAds[index] is not Data: $index");
-                              indexDeals = index;
-                              return const StaggeredTile.count(2, 0.4);
-                              // return const StaggeredTile.count(1, 1);
+              : RefreshIndicator(
+                onRefresh: () {
+                  setState(() {
+                    page = 2;
+                    latestItems.clear();
+                    dataAds = [];
+                    firstFetch = true;
+                  });
+                  return fetchUpdatedDeals();
+                },
+                child: Column(
+                    children: [
+                      Expanded(
+                        child: NotificationListener(
+                          onNotification: (ScrollNotification scrollInfo) {
+                            if (scrollInfo.metrics.pixels > 1200.0) {
+                              fetchMoreUpdatedProducts = true;
+                              print(
+                                  "scrollInfo: ${scrollInfo.metrics.pixels}, true");
                             }
+                            if (fetchMoreUpdatedProducts &&
+                                scrollInfo.metrics.pixels < 2.0) {
+                              print(
+                                  "scrollInfo: ${scrollInfo.metrics.pixels}, fetchMoreUpdatedProducts");
+                              fetchMoreUpdatedProducts = false;
+                              Future.delayed(Duration(minutes: 3)).then((value) {
+                                if (scrollInfo.metrics.pixels <= 50.0) {
+                                  fetchUpdatedDeals();
+                                }
+                              });
+                            }
+                            if (!isLoading &&
+                                scrollInfo.metrics.pixels ==
+                                    scrollInfo.metrics.maxScrollExtent) {
+                              // start loading data
+                              setState(() {
+                                isLoading = true;
+                              });
+                              _loadData();
+                            }
+                            return false;
                           },
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 16,
-                          crossAxisSpacing: 8,
-                          itemBuilder: (context, index) {
-                            if (dataAds[index] is Data) {
-                              Data listData = dataAds[index] as Data;
-                              DateTime date1 = DateTime.now();
-                              String difference =
-                                  getDifference(date1, listData.updatedAt!);
-                              return Card(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 0.0, top: 8.0),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                                color: Colors.orange),
-                                            child: Text(
-                                              "${(((int.parse(listData.price!) - int.parse(listData.salePrice!)) / int.parse(listData.price!)) * 100).toInt()} % off",
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
+                          child: StaggeredGridView.countBuilder(
+                            controller: _scrollController,
+                            itemCount: dataAds.length,
+                            shrinkWrap: true,
+                            primary: false,
+                            padding:
+                                const EdgeInsets.only(top: 0, left: 8, right: 8),
+                            // childAspectRatio:
+                            // getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
+                            staggeredTileBuilder: (int index) {
+                              if (dataAds[index] is Data) {
+                                // print("dataAds[index] is Data: $index");
+                                return const StaggeredTile.count(1, 2.3);
+                              } else {
+                                // print("dataAds[index] is not Data: $index");
+                                return const StaggeredTile.count(2, 0.4);
+                                // return const StaggeredTile.count(1, 1);
+                              }
+                            },
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 16,
+                            crossAxisSpacing: 8,
+                            itemBuilder: (context, index) {
+                              if (dataAds[index] is Data) {
+                                Data listData = dataAds[index] as Data;
+                                date1 = DateTime.now().add(Duration(minutes: 30));
+
+                                String difference =
+                                    getDifference(date1: date1, index: index, title: listData.title, date: listData.updatedAt!, productID: listData.productId!);
+                                return Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 0.0, top: 8.0),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.orange),
+                                              child: Text(
+                                                "${(((int.parse(listData.price!) - int.parse(listData.salePrice!)) / int.parse(listData.price!)) * 100).toInt()} % off",
+                                                style: GoogleFonts.lato(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Spacer(),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Image.network(
-                                            listData.logo!,
-                                            width: 30,
-                                            height: 30,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    InkWell(
-                                      onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProductDetails(
-                                                      productID:
-                                                          listData.id!))),
-                                      child: Center(
-                                        child: Container(
-                                          height: 100,
-                                          width: getDeviceWidth(context) / 3,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                fit: BoxFit.contain,
-                                                image: NetworkImage(
-                                                  listData.imageUrls!,
-                                                )),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 8.0),
-                                      child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: IconButton(
-                                            icon: Icon(Icons.share),
-                                            color: Colors.orangeAccent,
-                                            onPressed: () {
-                                              Share.share('Some text');
-                                            },
-                                          )),
-                                    ),
-                                    Divider(
-                                      thickness: 2,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 8.0,
-                                      ),
-                                      child: Text(
-                                        listData.title!,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.lato(
-                                            color: Colors.black,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8, right: 20.0),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "₹${listData.salePrice!}",
-                                            style: GoogleFonts.lato(
-                                                color: Colors.green.shade500,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18),
-                                          ),
                                           Spacer(),
-                                          Text(
-                                            "₹${listData.price!}",
-                                            style: GoogleFonts.lato(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 16,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                                color:
-                                                    Colors.grey.withOpacity(1)),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8.0),
+                                            child: Image.network(
+                                              listData.logo!,
+                                              width: 30,
+                                              height: 30,
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 16.0),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            print(
-                                                "launchingffffff ${listData.url}");
-
-                                            String url =
-                                                listData.url.toString();
-                                            if (await canLaunch(url))
-                                              await launch(url);
-                                            else
-                                              // can't launch url, there is some error
-                                              throw "Could not launch $url";
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             WebViewPage(
-                                            //               url: listData.url!,
-                                            //             )));
-                                            // print("launching");
-                                          },
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      InkWell(
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProductDetails(
+                                                        productID:
+                                                            listData.id!))),
+                                        child: Center(
                                           child: Container(
-                                            padding: const EdgeInsets.all(12),
+                                            height: 100,
+                                            width: getDeviceWidth(context) / 3,
+                                            alignment: Alignment.center,
                                             decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                color: Colors.orange),
-                                            child: Text(
-                                              "Buy NOW",
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
+                                              image: DecorationImage(
+                                                  fit: BoxFit.contain,
+                                                  image: NetworkImage(
+                                                    listData.imageUrls!,
+                                                  )),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    Spacer(),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 10, left: 8),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.access_time),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Text(
-                                              "$difference",
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 0, left: 8),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Icon(Icons.access_time, size: 15,),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                "$difference",
+                                                style: GoogleFonts.lato(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 16,
+                                                    color: Colors.black
+                                                        .withOpacity(1)),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                              child: Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: IconButton(
+                                                    icon: Icon(Icons.share, size: 25,),
+                                                    color: Colors.orangeAccent,
+                                                    onPressed: () {
+                                                      Share.share('Some text');
+                                                    },
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Divider(
+                                        thickness: 2,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 8.0,
+                                        ),
+                                        child: Text(
+                                          listData.title!,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.lato(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8, right: 20.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "₹${listData.salePrice!}",
+                                              style: GoogleFonts.lato(
+                                                  color: Colors.green.shade500,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18),
+                                            ),
+                                            Spacer(),
+                                            Text(
+                                              "₹${listData.price!}",
                                               style: GoogleFonts.lato(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
-                                                  color: Colors.black
-                                                      .withOpacity(1)),
+                                                  decoration:
+                                                      TextDecoration.lineThrough,
+                                                  color:
+                                                      Colors.grey.withOpacity(1)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0, left: 8.0),
+                                          child: InkWell(
+                                            onTap: () async {
+                                              print(
+                                                  "launchingffffff ${listData.url}");
+
+                                              String url =
+                                                  listData.url.toString();
+                                              if (await canLaunch(url))
+                                                await launch(url);
+                                              else
+                                                // can't launch url, there is some error
+                                                throw "Could not launch $url";
+                                              // Navigator.push(
+                                              //     context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) =>
+                                              //             WebViewPage(
+                                              //               url: listData.url!,
+                                              //             )));
+                                              // print("launching");
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  color: Colors.orange),
+                                              child: Text(
+                                                "Buy NOW",
+                                                style: GoogleFonts.lato(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,),
+                                                textAlign: TextAlign.center,
+                                              ),
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 10,
-                                          )
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            } else if (dataAds[index] is int) {
-                              return const SizedBox(
-                                height: 1,
-                              );
-                            } else {
-                              // if dataads[index] is object (ads) then show container with adWidget
-                              final Container adcontent = Container(
-                                child: AdWidget(
-                                  ad: dataAds[index] as BannerAd,
-                                  key: UniqueKey(),
-                                ),
-                                height: 10,
-                              );
-                              return adcontent;
-                            }
-                          },
+                                      Spacer(),
+                                    ],
+                                  ),
+                                );
+                              } else if (dataAds[index] is int) {
+                                return const SizedBox(
+                                  height: 1,
+                                );
+                              } else {
+                                // if dataads[index] is object (ads) then show container with adWidget
+                                final Container adcontent = Container(
+                                  child: AdWidget(
+                                    ad: dataAds[index] as BannerAd,
+                                    key: UniqueKey(),
+                                  ),
+                                  height: 10,
+                                );
+                                return adcontent;
+                              }
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      height: isLoading ? 50.0 : 0,
-                      color: Colors.transparent,
-                      child: Center(
-                        child: CircularProgressIndicator(),
+                      Container(
+                        height: isLoading ? 50.0 : 0,
+                        color: Colors.transparent,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+              ),
         ),
-        floatingActionButton: Align(
+        floatingActionButton: firstFetch
+        ? Container()
+        :Align(
             alignment: Alignment.bottomRight,
             child: Container(
               decoration: BoxDecoration(
@@ -548,6 +560,13 @@ class _LatestOffersState extends State<LatestOffers> {
                     curve: Curves.easeOut,
                     duration: const Duration(milliseconds: 300),
                   );
+                  setState(() {
+                    page = 2;
+                    latestItems.clear();
+                    dataAds = [];
+                    firstFetch = true;
+                  });
+                  fetchUpdatedDeals();
                 },
               ),
             )));
@@ -556,7 +575,6 @@ class _LatestOffersState extends State<LatestOffers> {
   @override
   void initState() {
     super.initState();
-    min = 1;
     fetchUpdatedDeals();
   }
 
