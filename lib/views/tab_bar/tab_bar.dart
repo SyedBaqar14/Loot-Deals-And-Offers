@@ -35,6 +35,7 @@ class TabBarLoot extends StatelessWidget {
           ),
           backgroundColor: appBarBackgroundColor,
           bottom: TabBar(
+            labelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             indicatorColor: kUniversalColor,
             labelColor: kTextTitleColor,
             tabs: [

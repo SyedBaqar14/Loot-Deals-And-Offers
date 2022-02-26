@@ -90,6 +90,7 @@ class _SearchState extends State<Search> {
         iconTheme: IconThemeData(
           color: Colors.white, //change your color here
         ),
+        backgroundColor: appBarBackgroundColor,
         automaticallyImplyLeading: true,
         title: Text("Search",
           style: GoogleFonts.lato(

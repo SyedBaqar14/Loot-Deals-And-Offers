@@ -7,6 +7,7 @@ import 'package:loot/admob_helper.dart';
 import 'package:loot/config/constants.dart';
 import 'package:loot/model/product_details_model.dart';
 import 'package:loot/provider/product_details_provider.dart';
+import 'package:loot/routes/routes_names.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
@@ -80,27 +81,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         actions: <Widget>[
           InkWell(
             onTap: () {
-              // showCupertinoDialog(
-              //     context: context,
-              //     builder: (context) {
-              //       return CupertinoAlertDialog(
-              //         title: const Text("Logout"),
-              //         content:
-              //         const Text("Are your sure you want to logout"),
-              //         actions: [
-              //           TextButton(
-              //               onPressed: () => Navigator.of(context).pop(),
-              //               child: Text("No")),
-              //           TextButton(
-              //               onPressed: () => Navigator.pushAndRemoveUntil(
-              //                   context,
-              //                   MaterialPageRoute(
-              //                       builder: (context) => SignIn()),
-              //                       (route) => false),
-              //               child: Text("Yes")),
-              //         ],
-              //       );
-              //     });
+              Navigator.pushNamed(context, search);
             },
             child: Icon(
               Icons.search,
@@ -190,6 +171,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                     SizedBox(
                       height: 10,
                     ),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: Icon(Icons.share),
+                          color: Colors.orangeAccent,
+                          onPressed: () {
+                            Share.share('Some text');
+                          },
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       children: [
                         Expanded(
@@ -205,19 +198,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                         SizedBox(
                           width: 5,
                         ),
-                        Spacer(),
-                        Align(
-                            alignment: Alignment.centerRight,
-                            child: IconButton(
-                              icon: Icon(Icons.share),
-                              color: Colors.orangeAccent,
-                              onPressed: () {
-                                Share.share('Some text');
-                              },
-                            )),
-                        SizedBox(
-                          width: 5,
-                        )
                       ],
                     ),
                     SizedBox(
