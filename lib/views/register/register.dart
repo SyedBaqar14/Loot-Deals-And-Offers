@@ -183,24 +183,6 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, left: 35, right: 35),
                   child: TextFormField(
-                    controller: _controllerPhone,
-                    validator: (val) {
-                      if (val!.isEmpty) {
-                        return "Phone Number is required";
-                      } else {
-                        return null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      labelText: "phone",
-                      labelStyle:
-                          TextStyle(fontFamily: 'Poppins', color: Colors.grey),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 35, right: 35),
-                  child: TextFormField(
                     controller: _controllerEmailAddress,
                     validator: (val) {
                       if (val!.isEmpty) {
@@ -217,6 +199,24 @@ class _RegisterState extends State<Register> {
                       labelText: "email",
                       labelStyle:
                           TextStyle(fontFamily: 'Poppins', color: Colors.grey),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 35, right: 35),
+                  child: TextFormField(
+                    controller: _controllerPhone,
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Phone Number is required";
+                      } else {
+                        return null;
+                      }
+                    },
+                    decoration: InputDecoration(
+                      labelText: "phone",
+                      labelStyle:
+                      TextStyle(fontFamily: 'Poppins', color: Colors.grey),
                     ),
                   ),
                 ),
@@ -264,7 +264,7 @@ class _RegisterState extends State<Register> {
                     controller: _controllerConfirmPassword,
                     obscureText: isObsecure,
                     decoration: InputDecoration(
-                      labelText: "Password",
+                      labelText: "City",
                       labelStyle:
                           TextStyle(fontFamily: 'Poppins', color: Colors.grey),
                     ).copyWith(
@@ -274,22 +274,15 @@ class _RegisterState extends State<Register> {
                             isObsecure = !isObsecure;
                           });
                         },
-                        child: isObsecure
-                            ? Icon(
-                                Icons.remove_red_eye,
-                                size: 20,
-                              )
-                            : Icon(
-                                Icons.remove_red_eye_outlined,
+                        child: Icon(
+                                Icons.add,
                                 size: 20,
                               ),
                       ),
                     ),
                     validator: (val) {
                       if (val!.isEmpty) {
-                        return "Password is required";
-                      } else if (val != _controllerPassword.text) {
-                        return "Password do not match";
+                        return "City is required";
                       } else {
                         return null;
                       }
@@ -325,7 +318,7 @@ class _RegisterState extends State<Register> {
                         },
                         child: Text(
                           "Register",
-                          style: GoogleFonts.lato(
+                          style: GoogleFonts.roboto(
                               color: Colors.white,
                               fontWeight: FontWeight.w400,
                               fontSize: 16),

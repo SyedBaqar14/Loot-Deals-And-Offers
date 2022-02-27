@@ -210,7 +210,7 @@ class _CouponCodesState extends State<CouponCodes> {
                                     decoration: BoxDecoration(color: Colors.orange),
                                     child: Text(
                                       "${(((int.parse(latestItems[index].price!) - int.parse(latestItems[index].salePrice!)) / int.parse(latestItems[index].price!) ) * 100).toInt()} % off",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           color: Colors.white, fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -281,7 +281,7 @@ class _CouponCodesState extends State<CouponCodes> {
                                 child: Text(
                                   couponItems[index].title!,
                                   overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.lato(
+                                  style: GoogleFonts.roboto(
                                       color: Colors.black,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -297,7 +297,7 @@ class _CouponCodesState extends State<CouponCodes> {
                                 children: [
                                   Text(
                                     "₹${latestItems[index].salePrice!}",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.roboto(
                                         color: Colors.green.shade500,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18),
@@ -305,7 +305,7 @@ class _CouponCodesState extends State<CouponCodes> {
                                   Spacer(),
                                   Text(
                                     "₹${latestItems[index].price!}",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.roboto(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
                                         decoration: TextDecoration.lineThrough,
@@ -326,7 +326,7 @@ class _CouponCodesState extends State<CouponCodes> {
                                     Expanded(
                                       child: Text(couponItems[index].code!,
                                         overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16),),
                                     ),
@@ -350,7 +350,7 @@ class _CouponCodesState extends State<CouponCodes> {
                                     Expanded(
                                       child: Text(
                                         "$difference",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
                                             color: Colors.black.withOpacity(1)),

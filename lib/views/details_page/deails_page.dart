@@ -144,7 +144,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 color: Colors.orange),
                             child: Text(
                               "${(((int.parse(data.price!) - int.parse(data.salePrice!)) / int.parse(data.price!)) * 100).toInt()} % off",
-                              style: GoogleFonts.lato(
+                              style: GoogleFonts.roboto(
                                   color: Colors.white, fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -189,7 +189,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           child: Text(
                             data.title!,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.roboto(
                                 color: Colors.black,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
@@ -212,7 +212,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         Expanded(
                           child: Text(
                             difference,
-                            style: GoogleFonts.lato(
+                            style: GoogleFonts.roboto(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
                                 color: Colors.black.withOpacity(1)),
@@ -230,7 +230,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       children: [
                         Text(
                           "₹${data.salePrice}",
-                          style: GoogleFonts.lato(
+                          style: GoogleFonts.roboto(
                               color: Colors.green.shade500,
                               fontWeight: FontWeight.bold,
                               fontSize: 18),
@@ -238,7 +238,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                         Spacer(),
                         Text(
                           "₹${data.price}",
-                          style: GoogleFonts.lato(
+                          style: GoogleFonts.roboto(
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
                               decoration: TextDecoration.lineThrough,
@@ -271,7 +271,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             child: Center(
                               child: Text(
                                 "Buy NOW",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -299,7 +299,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             children: [
                               Text(
                                 "How to get this Offer?",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -317,33 +317,33 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       children: <TextSpan>[
                                     TextSpan(
                                         text: "•	Click On ",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 14,
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500)),
                                     TextSpan(
                                         text: "Buy Now",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 14,
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold)),
                                     TextSpan(
                                         text: " Button to go to offer page.",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 14,
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500)),
                                   ])),
                               Text(
                                 "•	Check for latest price & stock availability.\n•	Add to cart & select/update shipping info.\n•	Make payment.",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
                               ),
                               Row(
                                 children: [
                                   Text("•	Subscribe to ",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           fontSize: 14,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w500)),
@@ -366,7 +366,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         throw "Could not launch $url";
                                     },
                                     child: Text("Amazon Prime ",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                           fontSize: 14,
                                           color: Colors.red,
                                           fontWeight: FontWeight.bold,
@@ -376,7 +376,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     child: Text(
                                         "to get free shipping on all Orders.",
                                         overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 14,
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500)),
@@ -388,7 +388,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               Text(
                                 "Affiliate Disclaimer: -",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     fontSize: 14,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
@@ -398,7 +398,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               Text(
                                 "*Important Disclaimer: As an Amazon Associate, we earn from qualifying purchases.",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     fontSize: 14,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
@@ -408,7 +408,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               ),
                               Text(
                                 "*Important Disclaimer: Amazon and the Amazon logo are trademarks of Amazon.com, Inc. or its affiliates.",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     fontSize: 14,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
@@ -420,7 +420,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             children: [
                               Text(
                                 "How to get this Offer?",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
                               ),
@@ -438,26 +438,26 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       children: <TextSpan>[
                                     TextSpan(
                                         text: "•	Click On ",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 14,
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500)),
                                     TextSpan(
                                         text: "Buy Now",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 14,
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold)),
                                     TextSpan(
                                         text: " Button to go to offer page.",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontSize: 14,
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500)),
                                   ])),
                               Text(
                                 "•	Check for latest price & stock availability.\n•	Add to cart & select/update shipping info.\n•	Make payment.",
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
                               ),

@@ -219,7 +219,7 @@ class _TrendingOffersState extends State<TrendingOffers> {
                                       decoration: BoxDecoration(color: Colors.orange),
                                       child: Text(
                                         "${(((int.parse(trendingItems[index].mrp!) - int.parse(trendingItems[index].price!)) / int.parse(trendingItems[index].mrp!) ) * 100).toInt()} % off",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             color: Colors.white, fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -272,7 +272,7 @@ class _TrendingOffersState extends State<TrendingOffers> {
                                 child: Text(
                                   trendingItems[index].title!,
                                   overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.lato(
+                                  style: GoogleFonts.roboto(
                                       color: Colors.black,
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -287,7 +287,7 @@ class _TrendingOffersState extends State<TrendingOffers> {
                                   children: [
                                     Text(
                                       "₹${trendingItems[index].price!}",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           color: Colors.green.shade500,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18),
@@ -295,7 +295,7 @@ class _TrendingOffersState extends State<TrendingOffers> {
                                     Spacer(),
                                     Text(
                                       "₹${trendingItems[index].mrp!}",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 16,
                                           decoration: TextDecoration.lineThrough,
@@ -335,7 +335,7 @@ class _TrendingOffersState extends State<TrendingOffers> {
                                           color: Colors.orange),
                                       child: Text(
                                         "Buy NOW",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             color: Colors.white, fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -354,7 +354,7 @@ class _TrendingOffersState extends State<TrendingOffers> {
                                     Expanded(
                                       child: Text(
                                         "$difference",
-                                        style: GoogleFonts.lato(
+                                        style: GoogleFonts.roboto(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
                                             color: Colors.black.withOpacity(1)),

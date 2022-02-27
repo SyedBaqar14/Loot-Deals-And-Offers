@@ -2,12 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:loot/components/side_nav.dart';
-import 'package:loot/config/asset_config.dart';
 import 'package:loot/config/constants.dart';
 import 'package:loot/routes/routes_names.dart';
 import 'package:loot/views/coupons/coupons.dart';
-import 'package:loot/views/details_page/deails_page.dart';
-import 'package:loot/views/register/login.dart';
 import 'package:loot/views/trending_deals/trending_deals.dart';
 import 'package:loot/views/latest_deals/latest_deals.dart';
 

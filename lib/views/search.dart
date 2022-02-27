@@ -93,7 +93,7 @@ class _SearchState extends State<Search> {
         backgroundColor: appBarBackgroundColor,
         automaticallyImplyLeading: true,
         title: Text("Search",
-          style: GoogleFonts.lato(
+          style: GoogleFonts.roboto(
         color: Colors.white,
             fontWeight: FontWeight.w500,
            ),),
@@ -164,7 +164,7 @@ class _SearchState extends State<Search> {
                               latestOffers = true;
                             });
                           }, child: Text("Latest Offers",
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.roboto(
                             color:  latestOffers? Colors.white : Colors.black,
                             fontWeight: FontWeight.w500,
                             fontSize: 16),
@@ -190,7 +190,7 @@ class _SearchState extends State<Search> {
                               trendingOffers = true;
                             });
                           }, child: Text("Trending Offers",
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.roboto(
                             color: trendingOffers? Colors.white : Colors.black,
                             fontWeight: FontWeight.w400,
                             fontSize: 16),
@@ -216,7 +216,7 @@ class _SearchState extends State<Search> {
                               trendingOffers = false;
                             });
                           }, child: Text("Coupon Codes",
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.roboto(
                             color: couponCodes? Colors.white : Colors.black,
                             fontWeight: FontWeight.w400,
                             fontSize: 16),
@@ -271,7 +271,7 @@ class _SearchState extends State<Search> {
                                     decoration: BoxDecoration(color: Colors.orange),
                                     child: Text(
                                       "${(((int.parse(searchItems[index].price!) - int.parse(searchItems[index].salePrice!)) / int.parse(searchItems[index].price!) ) * 100).toInt()} % off",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           color: Colors.white, fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -330,7 +330,7 @@ class _SearchState extends State<Search> {
                               child: Text(
                                 searchItems[index].title!,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     color: Colors.black,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold),
@@ -345,7 +345,7 @@ class _SearchState extends State<Search> {
                                 children: [
                                   Text(
                                     "₹${searchItems[index].salePrice!}",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.roboto(
                                         color: Colors.green.shade500,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18),
@@ -353,7 +353,7 @@ class _SearchState extends State<Search> {
                                   Spacer(),
                                   Text(
                                     "₹${searchItems[index].price!}",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.roboto(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
                                         decoration: TextDecoration.lineThrough,
@@ -384,7 +384,7 @@ class _SearchState extends State<Search> {
                                         color: Colors.orange),
                                     child: Text(
                                       "Buy NOW",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           color: Colors.white, fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -403,7 +403,7 @@ class _SearchState extends State<Search> {
                                   Expanded(
                                     child: Text(
                                       "$difference",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 16,
                                           color: Colors.black.withOpacity(1)),
@@ -452,7 +452,7 @@ class _SearchState extends State<Search> {
                                     decoration: BoxDecoration(color: Colors.orange),
                                     child: Text(
                                       "${(((int.parse(searchItems[index].price!) - int.parse(searchItems[index].salePrice!)) / int.parse(searchItems[index].price!) ) * 100).toInt()} % off",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           color: Colors.white, fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -511,7 +511,7 @@ class _SearchState extends State<Search> {
                               child: Text(
                                 searchItems[index].title!,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.lato(
+                                style: GoogleFonts.roboto(
                                     color: Colors.black,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold),
@@ -526,7 +526,7 @@ class _SearchState extends State<Search> {
                                 children: [
                                   Text(
                                     "₹${searchItems[index].salePrice!}",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.roboto(
                                         color: Colors.green.shade500,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18),
@@ -534,7 +534,7 @@ class _SearchState extends State<Search> {
                                   Spacer(),
                                   Text(
                                     "₹${searchItems[index].price!}",
-                                    style: GoogleFonts.lato(
+                                    style: GoogleFonts.roboto(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
                                         decoration: TextDecoration.lineThrough,
@@ -565,7 +565,7 @@ class _SearchState extends State<Search> {
                                         color: Colors.orange),
                                     child: Text(
                                       "Buy NOW",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           color: Colors.white, fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -584,7 +584,7 @@ class _SearchState extends State<Search> {
                                   Expanded(
                                     child: Text(
                                       "$difference",
-                                      style: GoogleFonts.lato(
+                                      style: GoogleFonts.roboto(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 16,
                                           color: Colors.black.withOpacity(1)),

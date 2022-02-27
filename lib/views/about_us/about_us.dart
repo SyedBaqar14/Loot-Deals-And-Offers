@@ -38,7 +38,7 @@ class AboutUs extends StatelessWidget {
                 EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "Online Offers & Deals",
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.roboto(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 16),
@@ -55,14 +55,14 @@ class AboutUs extends StatelessWidget {
                   ),
                   children: <TextSpan>[
                   new TextSpan(text: "Our AI biased algorithm search for the best deals and offers across various sections of the online stores and present them to our shoppers. This helps them to make better shopping decisions and save more using our deals and offers. We at loot continuously focus on best deals available online and provide you the best value for money offers and deals. Also, our USP is ",
-                    style:  GoogleFonts.lato(
+                    style:  GoogleFonts.roboto(
                       color: Colors.grey.shade700,)),
                   TextSpan(text: "we recommend products and gadgets you don't know about but maybe useful for you. ",
-                      style: GoogleFonts.lato(
+                      style: GoogleFonts.roboto(
                         fontWeight: FontWeight.bold,
                         color: Colors.black.withOpacity(.65),)),
                     TextSpan(text: "We do not sell any products; we only provide offers and deals of all stores at a single place.",
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.roboto(
                           color: Colors.redAccent,)),
                   ],
                   ),
@@ -73,7 +73,7 @@ class AboutUs extends StatelessWidget {
                 EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "Coupon Code",
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.roboto(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 16),
@@ -83,7 +83,7 @@ class AboutUs extends StatelessWidget {
                 EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "We also provide discount Coupon Code of all type of online stores which is available. ",
-                  style:  GoogleFonts.lato(
+                  style:  GoogleFonts.roboto(
                     color: Colors.grey.shade700,),
                 )),
             Padding(
@@ -91,7 +91,7 @@ class AboutUs extends StatelessWidget {
                 EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "Loot App is Powered by RPM Tech Tips.",
-                  style:  GoogleFonts.lato(
+                  style:  GoogleFonts.roboto(
                     color: Colors.grey.shade700,),
                 )),
             Padding(
@@ -99,7 +99,7 @@ class AboutUs extends StatelessWidget {
                 EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "RPM Tech Tips is a YouTube Channel which is Focused on Technology. You will get all types of Tech videos which Include –Technology Explained. Tech Reviews. Tips & Tricks. Product Unboxing. Software Tutorials, how to “Fix” Videos, Computer Problems.",
-                  style:  GoogleFonts.lato(
+                  style:  GoogleFonts.roboto(
                     color: Colors.grey.shade700,),
                 )),
             Padding(
@@ -107,7 +107,7 @@ class AboutUs extends StatelessWidget {
                 EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "Contact Us",
-                  style: GoogleFonts.lato(
+                  style: GoogleFonts.roboto(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
                       fontSize: 16),
@@ -124,10 +124,10 @@ class AboutUs extends StatelessWidget {
                   ),
                   children: <TextSpan>[
                     TextSpan(text: "If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at ",
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.roboto(
                           color: Colors.grey.shade700,)),
                     new TextSpan(text: "app@rpmtechtips.com",
-                        style: GoogleFonts.lato(
+                        style: GoogleFonts.roboto(
                           color: Colors.blue,)),
 
                   ],

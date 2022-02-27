@@ -330,7 +330,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                                   color: Colors.orange),
                                               child: Text(
                                                 "${(((int.parse(listData.price!) - int.parse(listData.salePrice!)) / int.parse(listData.price!)) * 100).toInt()} % off",
-                                                style: GoogleFonts.lato(
+                                                style: GoogleFonts.roboto(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.bold),
                                               ),
@@ -390,7 +390,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                             Expanded(
                                               child: Text(
                                                 "$difference",
-                                                style: GoogleFonts.lato(
+                                                style: GoogleFonts.roboto(
                                                     fontWeight: FontWeight.w400,
                                                     fontSize: 16,
                                                     color: Colors.black
@@ -423,7 +423,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                         child: Text(
                                           listData.title!,
                                           overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.lato(
+                                          style: GoogleFonts.roboto(
                                               color: Colors.black,
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold),
@@ -439,7 +439,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                           children: [
                                             Text(
                                               "₹${listData.salePrice!}",
-                                              style: GoogleFonts.lato(
+                                              style: GoogleFonts.roboto(
                                                   color: Colors.green.shade500,
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 18),
@@ -447,7 +447,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                             Spacer(),
                                             Text(
                                               "₹${listData.price!}",
-                                              style: GoogleFonts.lato(
+                                              style: GoogleFonts.roboto(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 16,
                                                   decoration:
@@ -461,16 +461,17 @@ class _LatestOffersState extends State<LatestOffers> {
                                       const SizedBox(
                                         height: 5,
                                       ),
+                                      Spacer(),
                                       Align(
                                         alignment: Alignment.centerRight,
                                         child: Padding(
                                           padding:
-                                              const EdgeInsets.only(right: 8.0, left: 8.0),
+                                              const EdgeInsets.only(right: 16.0, left: 16.0),
                                           child: InkWell(
                                             onTap: () async {
                                               print(
                                                   "launchingffffff ${listData.url}");
-
+                                              //
                                               String url =
                                                   listData.url.toString();
                                               if (await canLaunch(url))
@@ -485,7 +486,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                               //             WebViewPage(
                                               //               url: listData.url!,
                                               //             )));
-                                              // print("launching");
+                                              print("launching");
                                             },
                                             child: Container(
                                               width: MediaQuery.of(context).size.width,
@@ -496,7 +497,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                                   color: Colors.orange),
                                               child: Text(
                                                 "Buy NOW",
-                                                style: GoogleFonts.lato(
+                                                style: GoogleFonts.roboto(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.bold,),
                                                 textAlign: TextAlign.center,
