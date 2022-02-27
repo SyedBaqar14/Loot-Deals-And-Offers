@@ -123,13 +123,17 @@ class AboutUs extends StatelessWidget {
                     color: Colors.black,
                   ),
                   children: <TextSpan>[
-                    TextSpan(text: "If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at ",
+                    TextSpan(text: "Do you want to promote your offers on bestonlineloot.com and Loot app or would like to share any queries, thoughts, ideas, feedback? We are always there to help you.",
                         style: GoogleFonts.roboto(
                           color: Colors.grey.shade700,)),
-                    new TextSpan(text: "app@rpmtechtips.com",
+                    new TextSpan(text: "\n\nEmail: ",
                         style: GoogleFonts.roboto(
-                          color: Colors.blue,)),
-
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black.withOpacity(.65),)),
+                    new TextSpan(text: "web@bestonlineloot.com",
+                        style: GoogleFonts.roboto(
+                          color: Colors.blue,
+                        decoration: TextDecoration.underline)),
                   ],
                 ),
               ),

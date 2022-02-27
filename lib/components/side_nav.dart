@@ -6,6 +6,7 @@ import 'package:loot/views/about_us/about_us.dart';
 import 'package:loot/views/about_us/privacy_policy.dart';
 import 'package:loot/views/about_us/terms_and_conditions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../views/latest_deals/latest_deals.dart';
 
 class SideNavigation extends StatefulWidget {
@@ -166,12 +167,19 @@ class _SideNavigationState extends State<SideNavigation> {
               'Privacy Policy',
               style: TextStyle(color: kSideNaveTextColor, fontSize: 14),
             ),
-            onTap: () => {
-              Navigator.of(context).pop(),
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const PrivacyPolicy()),
-              ),
+            onTap: () async {
+              Navigator.of(context).pop();
+
+              String url = "https://bestonlineloot.com/policy-policy";
+              if (await canLaunch(url))
+              await launch(url);
+              else
+              // can't launch url, there is some error
+              throw "Could not launch $url";
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const PrivacyPolicy()),
+              // ),
             },
           ),
           ListTile(
@@ -183,12 +191,19 @@ class _SideNavigationState extends State<SideNavigation> {
               'Terms & Conditions',
               style: TextStyle(color: kSideNaveTextColor, fontSize: 14),
             ),
-            onTap: () => {
-              Navigator.of(context).pop(),
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const TermsAndConditions()),
-              ),
+            onTap: () async {
+              Navigator.of(context).pop();
+
+              String url = "https://bestonlineloot.com/terms-and-conditions";
+              if (await canLaunch(url))
+                await launch(url);
+              else
+                // can't launch url, there is some error
+                throw "Could not launch $url";
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const PrivacyPolicy()),
+              // ),
             },
           ),
         ],

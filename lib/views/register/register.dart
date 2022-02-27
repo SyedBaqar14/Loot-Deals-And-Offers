@@ -23,6 +23,18 @@ class _RegisterState extends State<Register> {
   bool isObsecure = true;
   late FToast fToast;
 
+  bool rememberMe = false;
+
+  void _onRememberMeChanged(bool? newValue) => setState(() {
+    rememberMe = newValue!;
+
+    if (rememberMe) {
+      // TODO: Here goes your functionality that remembers the user.
+    } else {
+      // TODO: Forget the user
+    }
+  });
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +44,7 @@ class _RegisterState extends State<Register> {
     _controllerPhone = new TextEditingController();
     _controllerEmailAddress = new TextEditingController();
     _controllerPassword = new TextEditingController();
-    _controllerConfirmPassword = new TextEditingController();
+    _controllerCity = new TextEditingController();
   }
 
   _showToast({required String message}) {
@@ -108,7 +120,7 @@ class _RegisterState extends State<Register> {
   late TextEditingController _controllerPhone;
   late TextEditingController _controllerEmailAddress;
   late TextEditingController _controllerPassword;
-  late TextEditingController _controllerConfirmPassword;
+  late TextEditingController _controllerCity;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +148,7 @@ class _RegisterState extends State<Register> {
                 Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: 0, top: 30, right: 0),
+                      padding: EdgeInsets.only(left: 0, top: 20, right: 0),
                       child: Image.asset(
                         AssetConfig.kLootLogo,
                         height: 67.95,
@@ -144,7 +156,7 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 30, left: 0),
+                      padding: const EdgeInsets.only(top: 20, left: 0),
                       child: Text(
                         "Loot",
                         style: TextStyle(
@@ -157,7 +169,7 @@ class _RegisterState extends State<Register> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 50, left: 35),
+                  padding: const EdgeInsets.only(top: 20, left: 35),
                   child: Heading(
                     text: "Register",
                   ),
@@ -168,7 +180,7 @@ class _RegisterState extends State<Register> {
                     controller: _controllerName,
                     validator: (val) {
                       if (val!.isEmpty) {
-                        return "First Name is required";
+                        return "Name is required";
                       } else {
                         return null;
                       }
@@ -196,7 +208,7 @@ class _RegisterState extends State<Register> {
                       }
                     },
                     decoration: InputDecoration(
-                      labelText: "email",
+                      labelText: "Email",
                       labelStyle:
                           TextStyle(fontFamily: 'Poppins', color: Colors.grey),
                     ),
@@ -214,7 +226,7 @@ class _RegisterState extends State<Register> {
                       }
                     },
                     decoration: InputDecoration(
-                      labelText: "phone",
+                      labelText: "Phone",
                       labelStyle:
                       TextStyle(fontFamily: 'Poppins', color: Colors.grey),
                     ),
@@ -226,7 +238,7 @@ class _RegisterState extends State<Register> {
                     controller: _controllerPassword,
                     obscureText: isObsecure,
                     decoration: InputDecoration(
-                      labelText: "password",
+                      labelText: "Password",
                       labelStyle:
                           TextStyle(fontFamily: 'Poppins', color: Colors.grey),
                     ).copyWith(
@@ -261,25 +273,7 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, left: 35, right: 35),
                   child: TextFormField(
-                    controller: _controllerConfirmPassword,
-                    obscureText: isObsecure,
-                    decoration: InputDecoration(
-                      labelText: "City",
-                      labelStyle:
-                          TextStyle(fontFamily: 'Poppins', color: Colors.grey),
-                    ).copyWith(
-                      suffixIcon: InkWell(
-                        onTap: () {
-                          setState(() {
-                            isObsecure = !isObsecure;
-                          });
-                        },
-                        child: Icon(
-                                Icons.add,
-                                size: 20,
-                              ),
-                      ),
-                    ),
+                    controller: _controllerCity,
                     validator: (val) {
                       if (val!.isEmpty) {
                         return "City is required";
@@ -287,13 +281,30 @@ class _RegisterState extends State<Register> {
                         return null;
                       }
                     },
+                    decoration: InputDecoration(
+                      labelText: "City",
+                      labelStyle:
+                      TextStyle(fontFamily: 'Poppins', color: Colors.grey),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 25, right: 35),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                          value: rememberMe,
+                          onChanged: _onRememberMeChanged
+                      ),
+                      const Text("Subscribe for product updates.")
+                    ],
                   ),
                 ),
                 Align(
                   alignment: Alignment.center,
                   child: Padding(
                     padding:
-                        const EdgeInsets.only(top: 30, left: 35, right: 35),
+                        const EdgeInsets.only(top: 10, left: 35, right: 35),
                     child: OutlinedButton(
                         // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white), side: ),
                         style: OutlinedButton.styleFrom(
@@ -314,7 +325,7 @@ class _RegisterState extends State<Register> {
                               phone: _controllerPhone.text,
                               email: _controllerEmailAddress.text,
                               password: _controllerPassword.text,
-                              cPassword: _controllerConfirmPassword.text);
+                              cPassword: _controllerCity.text);
                         },
                         child: Text(
                           "Register",
@@ -327,7 +338,39 @@ class _RegisterState extends State<Register> {
                 ),
                 SizedBox(
                   height: 10,
-                )
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 35, right: 35),
+                  child: RichText(
+                    text: new TextSpan(
+                      // Note: Styles for TextSpans must be explicitly defined.
+                      // Child text spans will inherit styles from parent
+                      style: new TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(text: "By clicking sign up you agree to our ",
+                            style: GoogleFonts.roboto(
+                              color: Colors.black,
+                            fontWeight: FontWeight.bold)),
+                        new TextSpan(text: "Privacy Policy ",
+                            style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w500,
+                              color: kUniversalColor,)),
+                        TextSpan(text: "& ",
+                            style: GoogleFonts.roboto(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold)),
+                        new TextSpan(text: "Terms & Conditions. ",
+                            style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w500,
+                              color: kUniversalColor,)),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20,)
               ],
             ),
           ),
