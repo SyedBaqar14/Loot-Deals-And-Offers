@@ -44,7 +44,7 @@ class AboutUs extends StatelessWidget {
                       fontSize: 16),
                 )),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
+                  padding: const EdgeInsets.only(top: 5, right: 40, left: 20, bottom: 0),
                   child: RichText(
                   text: new TextSpan(
                   // Note: Styles for TextSpans must be explicitly defined.
@@ -80,7 +80,7 @@ class AboutUs extends StatelessWidget {
                 )),
             Padding(
                 padding:
-                EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
+                EdgeInsets.only(top: 5, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "We also provide discount Coupon Code of all type of online stores which is available. ",
                   style:  GoogleFonts.roboto(
@@ -88,7 +88,7 @@ class AboutUs extends StatelessWidget {
                 )),
             Padding(
                 padding:
-                EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
+                EdgeInsets.only(top: 5, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "Loot App is Powered by RPM Tech Tips.",
                   style:  GoogleFonts.roboto(
@@ -96,7 +96,7 @@ class AboutUs extends StatelessWidget {
                 )),
             Padding(
                 padding:
-                EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
+                EdgeInsets.only(top: 5, right: 40, left: 20, bottom: 0),
                 child: Text(
                   "RPM Tech Tips is a YouTube Channel which is Focused on Technology. You will get all types of Tech videos which Include –Technology Explained. Tech Reviews. Tips & Tricks. Product Unboxing. Software Tutorials, how to “Fix” Videos, Computer Problems.",
                   style:  GoogleFonts.roboto(
@@ -113,9 +113,9 @@ class AboutUs extends StatelessWidget {
                       fontSize: 16),
                 )),
             Padding(
-              padding: const EdgeInsets.only(top: 20, right: 40, left: 20, bottom: 0),
+              padding: const EdgeInsets.only(top: 5, right: 40, left: 20, bottom: 0),
               child: RichText(
-                text: new TextSpan(
+                text: TextSpan(
                   // Note: Styles for TextSpans must be explicitly defined.
                   // Child text spans will inherit styles from parent
                   style: new TextStyle(
@@ -130,7 +130,7 @@ class AboutUs extends StatelessWidget {
                         style: GoogleFonts.roboto(
                           fontWeight: FontWeight.bold,
                           color: Colors.black.withOpacity(.65),)),
-                    new TextSpan(text: "web@bestonlineloot.com",
+                    new TextSpan(text: "app@bestonlineloot.com",
                         style: GoogleFonts.roboto(
                           color: Colors.blue,
                         decoration: TextDecoration.underline)),
@@ -138,7 +138,7 @@ class AboutUs extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 10,)
+            SizedBox(height: 20,)
           ],
         ),
       ),

@@ -32,7 +32,7 @@ class _LatestOffersState extends State<LatestOffers> {
   bool isLoading = false;
   bool firstFetch = true;
   static bool fetchMoreUpdatedProducts = false;
-  ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   fetchUpdatedDeals() async {
     await Provider.of<UpdatedOffersProvider>(context, listen: false)

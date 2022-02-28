@@ -171,15 +171,34 @@ class _ProductDetailsState extends State<ProductDetails> {
                     SizedBox(
                       height: 10,
                     ),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: Icon(Icons.share),
-                          color: Colors.orangeAccent,
-                          onPressed: () {
-                            Share.share('Some text');
-                          },
-                        )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Icon(Icons.access_time, size: 15,),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Text(
+                            "$difference",
+                            style: GoogleFonts.roboto(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: Colors.black
+                                    .withOpacity(1)),
+                          ),
+                        ),
+                        Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              icon: Icon(Icons.share, size: 25,),
+                              color: Colors.orangeAccent,
+                              onPressed: () {
+                                Share.share('Some text');
+                              },
+                            )),
+                      ],
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -202,26 +221,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                     SizedBox(
                       height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.access_time),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: Text(
-                            difference,
-                            style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                                color: Colors.black.withOpacity(1)),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        )
-                      ],
                     ),
                     SizedBox(
                       height: 10,
