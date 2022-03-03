@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:loot/config/asset_config.dart';
 import 'package:loot/model/offers_model.dart';
 import 'package:loot/provider/search_provider.dart';
 import 'package:loot/views/details_page/deails_page.dart';
@@ -10,6 +12,8 @@ import 'package:loot/views/vewb_view_page.dart';
 import 'package:provider/provider.dart';
 import 'package:loot/config/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class Search extends StatefulWidget {
@@ -20,19 +24,26 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  static int page = 1;
   final List<Data> searchItems = [];
   bool isLoading = false;
   bool firstFetch = false;
+  // bool fetchData = true;
 
   // dropDownList
-  final List<String> dropdownList = ["A","B","C"];
-  String? _selectedDropdownValue;
   final TextEditingController searchController = TextEditingController();
   bool latestOffers = true;
   bool trendingOffers = false;
   bool couponCodes = false;
   late FToast fToast;
+  final ScrollController _scrollController = ScrollController();
+
+  onError(String error) {
+    setState(() {
+      // fetchData = false;
+    });
+    _showToast(message: "something went wrong");
+    print("error ===> $error");
+  }
 
   fetchSearchResults({required String keyword, required String searchCategory}) async {
     setState(() {
@@ -60,31 +71,36 @@ class _SearchState extends State<Search> {
           print('totalItems: ${value.data}');
           isLoading = false;
           firstFetch = false;
+          // fetchData = false;
         });
       }
-    });
+    }).catchError((Object error) => onError(error.toString()));
   }
 
-  String getDifference(DateTime date1,String date) {
-    print('date1 $date1');
-    print('date2 $date');
+  static DateTime date1 = DateTime.now();
+  String getDifference({required DateTime date1, required String date, required int index, required var productID, required var title}) {
+
+    print('$index) productID ($productID) => date1 $date1');
+    print('$index) productID ($productID) => date2 $date');
     var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
-    var date2 = inputFormat.parse(date);
-    print("minutes: ${date1.difference(date2).inMinutes}");
-    if(date1.difference(date2).inMinutes < 59) {
+    final date2 = inputFormat.parse(date);
+    if (date1.difference(date2).inMinutes < 59) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inMinutes} mins");
       return "${date1.difference(date2).inMinutes} mins";
-    } else if(date1.difference(date2).inHours <= 24) {
+    } else if (date1.difference(date2).inHours <= 24) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inHours} hours");
       return "${date1.difference(date2).inHours} hours ";
-    } else if(date1.difference(date2).inDays > 1){
+    } else if (date1.difference(date2).inDays > 1) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} days");
       return "${date1.difference(date2).inDays} days";
     } else {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} day");
       return "${date1.difference(date2).inDays} day";
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -242,59 +258,424 @@ class _SearchState extends State<Search> {
                     return false;
                   },
                   child: StaggeredGridView.countBuilder(
+                    controller: _scrollController,
                     itemCount: searchItems.length,
                     shrinkWrap: true,
                     primary: false,
                     padding:
-                    const EdgeInsets.only(top: 20, left: 8, right: 8),
+                    const EdgeInsets.only(top: 0, left: 8, right: 8),
                     // childAspectRatio:
                     // getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
                     staggeredTileBuilder: (int index) {
-                      return const StaggeredTile.count(1, 2.3);
+                        return const StaggeredTile.count(1, 2.3);
                     },
                     crossAxisCount: 2,
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 8,
                     itemBuilder: (context, index) {
-                      DateTime date1 = DateTime.now();
-                      String difference = getDifference(date1, searchItems[index].updatedAt!);
-                      return Card(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 0.0, top: 8.0),
+
+                      if(latestOffers) {
+                        Data listData = searchItems[index];
+                        date1 = DateTime.now().add(const Duration(minutes: 30));
+
+                        String difference =
+                        getDifference(date1: date1, index: index, title: listData.title, date: listData.updatedAt!, productID: listData.productId!);
+                        return Card(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 0.0, top: 8.0),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          color: Colors.orange),
+                                      child: Text(
+                                        "${(((int.parse(listData.price!) - int.parse(listData.salePrice!)) / int.parse(listData.price!)) * 100).toInt()} % off",
+                                        style: GoogleFonts.roboto(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(top: 8.0),
+                                    child: Image.network(
+                                      listData.logo!,
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ProductDetails(
+                                                productID:
+                                                listData.id!))),
+                                child: Center(
                                   child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(color: Colors.orange),
-                                    child: Text(
-                                      "${(((int.parse(searchItems[index].price!) - int.parse(searchItems[index].salePrice!)) / int.parse(searchItems[index].price!) ) * 100).toInt()} % off",
+                                    height: 100,
+                                    width: getDeviceWidth(context) / 3,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.contain,
+                                          image: NetworkImage(
+                                            listData.imageUrls!,
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 0, left: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Icon(Icons.access_time, size: 15,),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        "$difference",
+                                        style: GoogleFonts.roboto(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                            color: Colors.black
+                                                .withOpacity(1)),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                      const EdgeInsets.only(right: 8.0),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: IconButton(
+                                            icon: Icon(Icons.share, size: 25,),
+                                            color: Colors.orangeAccent,
+                                            onPressed: () {
+                                              Share.share(listData.url!);
+                                            },
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                thickness: 2,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                ),
+                                child: Text(
+                                  listData.title!,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8, right: 20.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "₹${listData.salePrice!}",
                                       style: GoogleFonts.roboto(
-                                          color: Colors.white, fontWeight: FontWeight.bold),
+                                          color: Colors.green.shade500,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                    Spacer(),
+                                    Text(
+                                      "₹${listData.price!}",
+                                      style: GoogleFonts.roboto(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 16,
+                                          decoration:
+                                          TextDecoration.lineThrough,
+                                          color:
+                                          Colors.grey.withOpacity(1)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Spacer(),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets.only(right: 16.0, left: 16.0),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      print(
+                                          "launchingffffff ${listData.url}");
+                                      //
+                                      String url =
+                                      listData.url.toString();
+                                      if (await canLaunch(url))
+                                        await launch(url);
+                                      else
+                                        // can't launch url, there is some error
+                                        throw "Could not launch $url";
+                                      // Navigator.push(
+                                      //     context,
+                                      //     MaterialPageRoute(
+                                      //         builder: (context) =>
+                                      //             WebViewPage(
+                                      //               url: listData.url!,
+                                      //             )));
+                                      print("launching");
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(8),
+                                          color: Colors.orange),
+                                      child: Text(
+                                        "Buy NOW",
+                                        style: GoogleFonts.roboto(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
+                            ],
+                          ),
+                        );
+                      } else if (trendingOffers) {
+                          Data listData = searchItems[index];
+                          date1 = DateTime.now().add(const Duration(minutes: 30));
+
+                          String difference =
+                          getDifference(date1: date1, index: index, title: listData.title, date: listData.createdAt!, productID: listData.id!);
+                          return Card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 0.0, top: 8.0),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(color: Colors.orange),
+                                        child: Text(
+                                          "${(((int.parse(listData.mrp!) - int.parse(listData.price!)) / int.parse(listData.mrp!) ) * 100).toInt()} % off",
+                                          style: GoogleFonts.roboto(
+                                              color: Colors.white, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Padding(
+                                        padding: const EdgeInsets.only(top: 8.0),
+                                        child: Image.asset(AssetConfig.kLootBag, width: 24, height: 24,)
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Center(
+                                  child: Container(
+                                    height: 100,
+                                    width: getDeviceWidth(context) / 3,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image:
+                                          NetworkImage(listData.imge!)),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 0, left: 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.access_time, size: 15,),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          "$difference",
+                                          style: GoogleFonts.roboto(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: Colors.black
+                                                  .withOpacity(1)),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(right: 8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: IconButton(
+                                              icon: Icon(Icons.share, size: 25,),
+                                              color: Colors.orangeAccent,
+                                              onPressed: () {
+                                                Share.share(listData.url!);
+                                              },
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 2,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 8.0,
+                                  ),
+                                  child: Text(
+                                    listData.title!,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.roboto(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8, right: 20.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "₹${listData.price!}",
+                                        style: GoogleFonts.roboto(
+                                            color: Colors.green.shade500,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        "₹${listData.mrp!}",
+                                        style: GoogleFonts.roboto(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                            decoration: TextDecoration.lineThrough,
+                                            color: Colors.grey.withOpacity(1)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+
+                                Spacer(),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.only(right: 16.0, left: 16.0),
+                                    child: InkWell(
+                                      onTap: () async {
+                                        print(
+                                            "launchingffffff ${listData.url}");
+                                        //
+                                        String url =
+                                        listData.url.toString();
+                                        if (await canLaunch(url))
+                                          await launch(url);
+                                        else
+                                          // can't launch url, there is some error
+                                          throw "Could not launch $url";
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             WebViewPage(
+                                        //               url: listData.url!,
+                                        //             )));
+                                        print("launching");
+                                      },
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(8),
+                                            color: Colors.orange),
+                                        child: Text(
+                                          "Buy NOW",
+                                          style: GoogleFonts.roboto(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                                 Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Image.network(
-                                    searchItems[index].logo!,
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                ),
                               ],
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            InkWell(
-                              onTap:() => Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => ProductDetails(productID: searchItems[index].id!)
-                              )),
-                              child: Center(
+                          );
+                        } else {
+                        Data listData = searchItems[index];
+                        date1 = DateTime.now().add(const Duration(minutes: 30));
+                        String difference =
+                        getDifference(date1: date1, index: index, title: listData.title, date: listData.createdAt!, productID: listData.id!);
+                        return Card(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Image.asset(AssetConfig.kLootBag, width: 24, height: 24,)
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Center(
                                 child: Container(
                                   height: 100,
                                   width: getDeviceWidth(context) / 3,
@@ -303,306 +684,96 @@ class _SearchState extends State<Search> {
                                     image: DecorationImage(
                                         fit: BoxFit.fill,
                                         image:
-                                        NetworkImage(searchItems[index].imageUrls!)),
+                                        NetworkImage("https://bestonlineloot.com/uploads/product_image/${listData.image!}")),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Icon(
-                                    Icons.share,
-                                    color: Colors.orangeAccent,
-                                  )),
-                            ),
-                            Divider(
-                              thickness: 2,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
+                              SizedBox(
+                                height: 20,
                               ),
-                              child: Text(
-                                searchItems[index].title!,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 20.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "₹${searchItems[index].salePrice!}",
-                                    style: GoogleFonts.roboto(
-                                        color: Colors.green.shade500,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "₹${searchItems[index].price!}",
-                                    style: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Colors.grey.withOpacity(1)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 16.0),
-                                child: InkWell(
-                                  onTap:()async{
-                                    print("launchingffffff ${searchItems[index].url}");
-                                    Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => WebViewPage(url:searchItems[index].url!,)
-                                    ));
-                                    print("launching");
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Colors.orange),
-                                    child: Text(
-                                      "Buy NOW",
-                                      style: GoogleFonts.roboto(
-                                          color: Colors.white, fontWeight: FontWeight.bold),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 0, left: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Icon(Icons.access_time, size: 15,),
+                                    SizedBox(
+                                      width: 10,
                                     ),
-                                  ),
+                                    Expanded(
+                                      child: Text(
+                                        "$difference",
+                                        style: GoogleFonts.roboto(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                            color: Colors.black
+                                                .withOpacity(1)),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                      const EdgeInsets.only(right: 8.0),
+                                      child: Align(
+                                          alignment: Alignment.topRight,
+                                          child: IconButton(
+                                            icon: Icon(Icons.share, size: 25,),
+                                            color: Colors.orangeAccent,
+                                            onPressed: () {
+                                              Share.share(listData.url!);
+                                            },
+                                          )),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 0, left: 8),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.access_time),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      "$difference",
-                                      style: GoogleFonts.roboto(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 16,
-                                          color: Colors.black.withOpacity(1)),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  )
-                                ],
+                              Divider(
+                                thickness: 2,
                               ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                          ],
-                        ),
-                      );
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                ),
+                                child: Text(
+                                  listData.title!,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.roboto(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8, left: 8,right: 2.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(listData.code!,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.roboto(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16),),
+                                    ),
+                                    const Spacer(),
+                                    IconButton(onPressed: (){
+                                      Clipboard.setData(ClipboardData(text: listData.code!));
+                                      _showToast(message: "Copied to clipboard.");
+                                    }, icon: Icon(Icons.copy, color: Colors.orange,)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     },
                   ),
-
-                  /*
-                  GridView.builder(
-                    itemCount: searchItems.length,
-                    shrinkWrap: true,
-                    primary: false,
-                    padding: const EdgeInsets.only(top: 20, left: 8, right: 8),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio:
-                        getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 5),
-                    itemBuilder: (context, index) {
-                      DateTime date1 = DateTime.now();
-                      String difference = getDifference(date1, searchItems[index].updatedAt!);
-                      return Card(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 0.0, top: 8.0),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(color: Colors.orange),
-                                    child: Text(
-                                      "${(((int.parse(searchItems[index].price!) - int.parse(searchItems[index].salePrice!)) / int.parse(searchItems[index].price!) ) * 100).toInt()} % off",
-                                      style: GoogleFonts.roboto(
-                                          color: Colors.white, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Image.network(
-                                    searchItems[index].logo!,
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            InkWell(
-                              onTap:() => Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => ProductDetails(productID: searchItems[index].id!)
-                              )),
-                              child: Center(
-                                child: Container(
-                                  height: 100,
-                                  width: getDeviceWidth(context) / 3,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image:
-                                        NetworkImage(searchItems[index].imageUrls!)),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Icon(
-                                    Icons.share,
-                                    color: Colors.orangeAccent,
-                                  )),
-                            ),
-                            Divider(
-                              thickness: 2,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                              ),
-                              child: Text(
-                                searchItems[index].title!,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 20.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "₹${searchItems[index].salePrice!}",
-                                    style: GoogleFonts.roboto(
-                                        color: Colors.green.shade500,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "₹${searchItems[index].price!}",
-                                    style: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Colors.grey.withOpacity(1)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 16.0),
-                                child: InkWell(
-                                  onTap:()async{
-                                    print("launchingffffff ${searchItems[index].url}");
-                                    Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => WebViewPage(url:searchItems[index].url!,)
-                                    ));
-                                    print("launching");
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Colors.orange),
-                                    child: Text(
-                                      "Buy NOW",
-                                      style: GoogleFonts.roboto(
-                                          color: Colors.white, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10, left: 8),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.access_time),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      "$difference",
-                                      style: GoogleFonts.roboto(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 16,
-                                          color: Colors.black.withOpacity(1)),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-
-                   */
                 ),
               ),
               Container(
@@ -623,7 +794,6 @@ class _SearchState extends State<Search> {
     super.initState();
     fToast = FToast();
     fToast.init(context);
-    // fetchDeals(pageNumber: page);
   }
 
   _showToast({required String message}) {
@@ -666,18 +836,7 @@ class _SearchState extends State<Search> {
 
   @override
   void dispose() {
-    page = 1;
     searchItems.clear();
     super.dispose();
   }
-}
-
-// returns DropdownMenueItem List
-List<DropdownMenuItem<String>> _dropDownItem(List<String> list) {
-  return list
-      .map((value) => DropdownMenuItem(
-    value: value,
-    child: Text(value),
-  ))
-      .toList();
 }

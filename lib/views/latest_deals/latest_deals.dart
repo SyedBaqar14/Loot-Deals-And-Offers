@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:loot/model/offers_model.dart';
@@ -16,7 +17,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../admob_helper.dart';
-import '../vewb_view_page.dart';
 
 class LatestOffers extends StatefulWidget {
   @override
@@ -26,13 +26,60 @@ class LatestOffers extends StatefulWidget {
 }
 
 class _LatestOffersState extends State<LatestOffers> {
+  late FToast fToast;
   static int page = 1;
   final List<Data> latestItems = [];
   late List<Object> dataAds; // will store both data + banner ads
   bool isLoading = false;
   bool firstFetch = true;
-  static bool fetchMoreUpdatedProducts = false;
+  bool fetchData = true;
   final ScrollController _scrollController = ScrollController();
+
+  onError(String error) {
+    setState(() {
+      fetchData = false;
+    });
+    _showToast(message: "something went wrong");
+    print("error ===> $error");
+  }
+
+  _showToast({required String message}) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.orangeAccent,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 12.0,
+          ),
+          Text(message, style: TextStyle(color: Colors.white),),
+        ],
+      ),
+    );
+
+
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.CENTER,
+      toastDuration: Duration(seconds: 2),
+    );
+
+    // Custom Toast Position
+    // fToast.showToast(
+    //     child: toast,
+    //     toastDuration: Duration(seconds: 2),
+    //     positionedToastBuilder: (context, child) {
+    //       return Positioned(
+    //         child: child,
+    //         top: 16.0,
+    //         left: 16.0,
+    //       );
+    //     });
+  }
 
   fetchUpdatedDeals() async {
     await Provider.of<UpdatedOffersProvider>(context, listen: false)
@@ -62,12 +109,12 @@ class _LatestOffersState extends State<LatestOffers> {
                   checkEvenOrOddFirstTime = false;
                   if ((i % 2 == 0)) {
                     print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
+                    // dataAds.insert(i, i);
+                    // dataAds.insert(
+                    //     i,
+                    //     AdmobHelper.getBannerAd(
+                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                    //       ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
                     print("i is odd");
@@ -94,7 +141,9 @@ class _LatestOffersState extends State<LatestOffers> {
                 }
               }
             }
-          } else {
+          }
+
+          else {
             for (int x = 0; x < 8; x++) {
               if (dataAds[x] is Data) {
                 Data listData = dataAds[x] as Data;
@@ -154,11 +203,12 @@ class _LatestOffersState extends State<LatestOffers> {
             }
           }
           print('totalItems: ${value.data}');
+          fetchData = false;
           isLoading = false;
           firstFetch = false;
         });
       }
-    });
+    }).catchError((Object error) => onError(error.toString()));
   }
 
   fetchDeals({required int pageNumber}) async {
@@ -242,8 +292,10 @@ class _LatestOffersState extends State<LatestOffers> {
     return Scaffold(
         body: Container(
           color: Colors.grey.withOpacity(.2),
-          child: firstFetch
+          child: fetchData
               ? Center(child: CircularProgressIndicator())
+              : firstFetch
+              ? Container()
               : RefreshIndicator(
                 onRefresh: () {
                   setState(() {
@@ -251,6 +303,7 @@ class _LatestOffersState extends State<LatestOffers> {
                     latestItems.clear();
                     dataAds = [];
                     firstFetch = true;
+                    fetchData = true;
                   });
                   return fetchUpdatedDeals();
                 },
@@ -259,22 +312,6 @@ class _LatestOffersState extends State<LatestOffers> {
                       Expanded(
                         child: NotificationListener(
                           onNotification: (ScrollNotification scrollInfo) {
-                            if (scrollInfo.metrics.pixels > 1200.0) {
-                              fetchMoreUpdatedProducts = true;
-                              print(
-                                  "scrollInfo: ${scrollInfo.metrics.pixels}, true");
-                            }
-                            if (fetchMoreUpdatedProducts &&
-                                scrollInfo.metrics.pixels < 2.0) {
-                              print(
-                                  "scrollInfo: ${scrollInfo.metrics.pixels}, fetchMoreUpdatedProducts");
-                              fetchMoreUpdatedProducts = false;
-                              Future.delayed(Duration(minutes: 3)).then((value) {
-                                if (scrollInfo.metrics.pixels <= 50.0) {
-                                  fetchUpdatedDeals();
-                                }
-                              });
-                            }
                             if (!isLoading &&
                                 scrollInfo.metrics.pixels ==
                                     scrollInfo.metrics.maxScrollExtent) {
@@ -406,7 +443,7 @@ class _LatestOffersState extends State<LatestOffers> {
                                                     icon: Icon(Icons.share, size: 25,),
                                                     color: Colors.orangeAccent,
                                                     onPressed: () {
-                                                      Share.share('Some text');
+                                                      Share.share(listData.url!);
                                                     },
                                                   )),
                                             ),
@@ -566,6 +603,7 @@ class _LatestOffersState extends State<LatestOffers> {
                     latestItems.clear();
                     dataAds = [];
                     firstFetch = true;
+                    fetchData = true;
                   });
                   fetchUpdatedDeals();
                 },
@@ -576,6 +614,8 @@ class _LatestOffersState extends State<LatestOffers> {
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast.init(context);
     fetchUpdatedDeals();
   }
 
@@ -584,6 +624,5 @@ class _LatestOffersState extends State<LatestOffers> {
     super.dispose();
     page = 2;
     latestItems.clear();
-    fetchMoreUpdatedProducts = false;
   }
 }

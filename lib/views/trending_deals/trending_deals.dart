@@ -19,7 +19,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../admob_helper.dart';
-import '../vewb_view_page.dart';
 
 class TrendingOffers extends StatefulWidget {
   @override
@@ -29,13 +28,22 @@ class TrendingOffers extends StatefulWidget {
 }
 
 class _TrendingOffersState extends State<TrendingOffers> {
+  late FToast fToast;
   static int page = 1;
   final List<Data> trendingItems = [];
   late List<Object> dataAds; // will store both data + banner ads
   bool isLoading = false;
   bool firstFetch = true;
-  static bool fetchMoreUpdatedProducts = false;
-  late FToast fToast;
+  bool fetchData = true;
+  final ScrollController _scrollController = ScrollController();
+
+  onError(String error) {
+    setState(() {
+      fetchData = false;
+    });
+    _showToast(message: "something went wrong");
+    print("error ===> $error");
+  }
 
   _showToast({required String message}) {
     Widget toast = Container(
@@ -82,34 +90,125 @@ class _TrendingOffersState extends State<TrendingOffers> {
       if (value is String) {
         print(value);
       } else if (value.status == "success") {
-        Future.delayed(Duration(microseconds: 100));
         print(value.status);
         setState(() {
-          trendingItems.addAll(value.data);
-          dataAds = List.from(trendingItems);
           // insert admob banner object in between the array list
           // var rm = Random();
-          int loadAdd = (dataAds.length - value.data.length).toInt() + 4;
-          int loadAddStartFrom = (loadAdd - 4);
-          for (int i = loadAddStartFrom; i < dataAds.length; i++) {
-            //generate a random number from 2 to 18 (+ 1)
-            // var ranNumPosition = min + rm.nextInt(9);
-            //and add the banner ad to particular index of arraylist
-            if (i == (loadAdd)) {
-              loadAdd += 6;
-              if (i % 2 == 0) {
-                dataAds.insert(i, AdmobHelper.getBannerAd(adUnitId: 'ca-app-pub-3940256099942544/6300978111')..load());
-                dataAds.insert(i, i);
+          if (firstFetch) {
+            int checkEvenOrOdd = 0;
+            bool checkEvenOrOddFirstTime = true;
+            trendingItems.addAll(value.data);
+            dataAds = List.from(trendingItems);
+            int loadAdd = 2;
+            for (int i = 0; i < dataAds.length; i++) {
+              //generate a random number from 2 to 18 (+ 1)
+              // var ranNumPosition = min + rm.nextInt(9);
+              //and add the banner ad to particular index of arraylist
+              if (checkEvenOrOddFirstTime) {
+                if (i == loadAdd) {
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((i % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
+              } else {
+                if (i == loadAdd) {
+                  checkEvenOrOddFirstTime = false;
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((checkEvenOrOdd % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
+              }
+            }
+          } else {
+            for (int x = 0; x < 8; x++) {
+              if (dataAds[x] is Data) {
+                Data listData = dataAds[x] as Data;
+                print("before: ${listData.productId}");
+                dataAds[x] = value.data[x];
+                Data listDataAfter = dataAds[x] as Data;
+                print("after: ${listDataAfter.productId}");
+              } else {
+                dataAds[x] = value.data[x];
+              }
+            }
+            int loadAdd = 2;
+            int checkEvenOrOdd = 0;
+            bool checkEvenOrOddFirstTime = true;
+            for (int i = 0; i < 8; i++) {
+              //generate a random number from 2 to 18 (+ 1)
+              // var ranNumPosition = min + rm.nextInt(9);
+              //and add the banner ad to particular index of arraylist
+              if (checkEvenOrOddFirstTime) {
+                if (i == loadAdd) {
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((i % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
+              } else {
+                if (i == loadAdd) {
+                  checkEvenOrOddFirstTime = false;
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((checkEvenOrOdd % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
               }
             }
           }
-
           print('totalItems: ${value.data}');
+          fetchData = false;
           isLoading = false;
           firstFetch = false;
         });
       }
-    });
+    }).catchError((Object error) => onError(error.toString()));
   }
 
   Future _loadData() async {
@@ -125,19 +224,24 @@ class _TrendingOffersState extends State<TrendingOffers> {
     // update data and loading status
   }
 
-  String getDifference(DateTime date1, String date) {
-    print('date1 $date1');
-    print('date2 $date');
+  static DateTime date1 = DateTime.now();
+  String getDifference({required DateTime date1, required String date, required int index, required var productID, required var title}) {
+
+    print('$index) productID ($productID) => date1 $date1');
+    print('$index) productID ($productID) => date2 $date');
     var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
-    var date2 = inputFormat.parse(date);
-    print("minutes: ${date1.difference(date2).inMinutes}");
+    final date2 = inputFormat.parse(date);
     if (date1.difference(date2).inMinutes < 59) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inMinutes} mins");
       return "${date1.difference(date2).inMinutes} mins";
     } else if (date1.difference(date2).inHours <= 24) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inHours} hours");
       return "${date1.difference(date2).inHours} hours ";
     } else if (date1.difference(date2).inDays > 1) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} days");
       return "${date1.difference(date2).inDays} days";
     } else {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} day");
       return "${date1.difference(date2).inDays} day";
     }
   }
@@ -147,257 +251,303 @@ class _TrendingOffersState extends State<TrendingOffers> {
     return Scaffold(
         body: Container(
           color: Colors.grey.withOpacity(.2),
-          child: firstFetch
+          child: fetchData
               ? Center(child: CircularProgressIndicator())
-              : Column(
-            children: [
-              Expanded(
-                child: NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels > 1200.0) {
-                      fetchMoreUpdatedProducts = true;
-                      print("scrollInfo: ${scrollInfo.metrics.pixels}, true");
-                    }
-                    if(fetchMoreUpdatedProducts && scrollInfo.metrics.pixels < 2.0) {
-                      print("scrollInfo: ${scrollInfo.metrics.pixels}, fetchMoreUpdatedProducts");
-                      fetchMoreUpdatedProducts = false;
-                      Future.delayed(Duration(minutes: 3)).then((value) {
-                        if (scrollInfo.metrics.pixels <= 50.0) {
-                          _loadData();
-                        }
-                      });
-                    }
-                    if (!isLoading &&
-                        scrollInfo.metrics.pixels ==
-                            scrollInfo.metrics.maxScrollExtent) {
-                      // start loading data
-                      setState(() {
-                        isLoading = true;
-                      });
-                      _loadData();
-                    }
-                    return false;
-                  },
-                  child: StaggeredGridView.countBuilder(
-                    itemCount: dataAds.length,
-                    shrinkWrap: true,
-                    primary: false,
-                    padding:
-                    const EdgeInsets.only(top: 20, left: 8, right: 8),
-                    // childAspectRatio:
-                    // getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
-                    staggeredTileBuilder: (int index) {
-                      if (dataAds[index] is Data) {
-                        print("dataAds[index] is Data: $index");
-                        return const StaggeredTile.count(1, 2.3);
-                      } else {
-                        print("dataAds[index] is not Data: $index");
-                        return const StaggeredTile.count(2, 0.4);
-                        // return const StaggeredTile.count(1, 1);
+              : firstFetch
+              ? Container()
+              : RefreshIndicator(
+            onRefresh: () {
+              setState(() {
+                page = 1;
+                trendingItems.clear();
+                dataAds = [];
+                firstFetch = true;
+                fetchData = true;
+              });
+              return fetchDeals(pageNumber: page);
+            },
+            child: Column(
+              children: [
+                Expanded(
+                  child: NotificationListener(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (!isLoading &&
+                          scrollInfo.metrics.pixels ==
+                              scrollInfo.metrics.maxScrollExtent) {
+                        // start loading data
+                        setState(() {
+                          isLoading = true;
+                        });
+                        _loadData();
                       }
+                      return false;
                     },
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 8,
-                    itemBuilder: (context, index) {
-                      if (dataAds[index] is Data) {
-                        Data listData = dataAds[index] as Data;
-                        print("image: ${listData.imge}");
-                        DateTime date1 = DateTime.now();
-                        String difference =
-                        getDifference(date1, listData.createdAt!);
-                        return Card(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 0.0, top: 8.0),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(color: Colors.orange),
-                                      child: Text(
-                                        "${(((int.parse(trendingItems[index].mrp!) - int.parse(trendingItems[index].price!)) / int.parse(trendingItems[index].mrp!) ) * 100).toInt()} % off",
-                                        style: GoogleFonts.roboto(
-                                            color: Colors.white, fontWeight: FontWeight.bold),
+                    child: StaggeredGridView.countBuilder(
+                      controller: _scrollController,
+                      itemCount: dataAds.length,
+                      shrinkWrap: true,
+                      primary: false,
+                      padding:
+                      const EdgeInsets.only(top: 0, left: 8, right: 8),
+                      // childAspectRatio:
+                      // getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
+                      staggeredTileBuilder: (int index) {
+                        if (dataAds[index] is Data) {
+                          // print("dataAds[index] is Data: $index");
+                          return const StaggeredTile.count(1, 2.3);
+                        } else {
+                          // print("dataAds[index] is not Data: $index");
+                          return const StaggeredTile.count(2, 0.4);
+                          // return const StaggeredTile.count(1, 1);
+                        }
+                      },
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 8,
+                      itemBuilder: (context, index) {
+                        if (dataAds[index] is Data) {
+                          Data listData = dataAds[index] as Data;
+                          date1 = DateTime.now().add(Duration(minutes: 30));
+
+                          String difference =
+                          getDifference(date1: date1, index: index, title: listData.title, date: listData.createdAt!, productID: listData.id!);
+                          return Card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 0.0, top: 8.0),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(color: Colors.orange),
+                                        child: Text(
+                                          "${(((int.parse(listData.mrp!) - int.parse(listData.price!)) / int.parse(listData.mrp!) ) * 100).toInt()} % off",
+                                          style: GoogleFonts.roboto(
+                                              color: Colors.white, fontWeight: FontWeight.bold),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Spacer(),
-                                  Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Image.asset(AssetConfig.kLootBag, width: 24, height: 24,)
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Center(
-                                child: Container(
-                                  height: 100,
-                                  width: getDeviceWidth(context) / 3,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image:
-                                        NetworkImage(trendingItems[index].imge!)),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: IconButton(
-                                      icon: Icon(Icons.share),
-                                      color: Colors.orangeAccent,
-                                      onPressed: () {
-                                        Share.share('Some text');
-                                      },
-                                    )),
-                              ),
-                              Divider(
-                                thickness: 2,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 8.0,
-                                ),
-                                child: Text(
-                                  trendingItems[index].title!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8, right: 20.0),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "₹${trendingItems[index].price!}",
-                                      style: GoogleFonts.roboto(
-                                          color: Colors.green.shade500,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
                                     Spacer(),
-                                    Text(
-                                      "₹${trendingItems[index].mrp!}",
-                                      style: GoogleFonts.roboto(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 16,
-                                          decoration: TextDecoration.lineThrough,
-                                          color: Colors.grey.withOpacity(1)),
+                                    Padding(
+                                        padding: const EdgeInsets.only(top: 8.0),
+                                        child: Image.asset(AssetConfig.kLootBag, width: 24, height: 24,)
                                     ),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 16.0),
-                                  child: InkWell(
-                                    onTap:()async{
-                                      print("launchingffffff ${listData.url}");
-
-                                      String url = listData.url.toString();
-                                      if (await canLaunch(url)) {
-                                        await launch(url);
-                                      } else {
-                                        // can't launch url, there is some error
-                                        _showToast(message: "something went wrong");
-                                        throw "Could not launch $url";
-                                      }
-                                      // Navigator.push(context, MaterialPageRoute(
-                                      //     builder: (context) => WebViewPage(url:trendingItems[index].url!,)
-                                      // ));
-                                      // print("launching");
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
-                                          color: Colors.orange),
-                                      child: Text(
-                                        "Buy NOW",
-                                        style: GoogleFonts.roboto(
-                                            color: Colors.white, fontWeight: FontWeight.bold),
-                                      ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Center(
+                                  child: Container(
+                                    height: 100,
+                                    width: getDeviceWidth(context) / 3,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image:
+                                          NetworkImage("https://bestonlineloot.com/uploads/product_image/${listData.imge!}")),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 10, left: 8),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.access_time),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        "$difference",
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 0, left: 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.access_time, size: 15,),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          "$difference",
+                                          style: GoogleFonts.roboto(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: Colors.black
+                                                  .withOpacity(1)),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(right: 8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: IconButton(
+                                              icon: Icon(Icons.share, size: 25,),
+                                              color: Colors.orangeAccent,
+                                              onPressed: () {
+                                                Share.share(listData.url!);
+                                              },
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Divider(
+                                  thickness: 2,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 8.0,
+                                  ),
+                                  child: Text(
+                                    listData.title!,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.roboto(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8, right: 20.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "₹${listData.price!}",
+                                        style: GoogleFonts.roboto(
+                                            color: Colors.green.shade500,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        "₹${listData.mrp!}",
                                         style: GoogleFonts.roboto(
                                             fontWeight: FontWeight.w400,
                                             fontSize: 16,
-                                            color: Colors.black.withOpacity(1)),
+                                            decoration: TextDecoration.lineThrough,
+                                            color: Colors.grey.withOpacity(1)),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+
+                                Spacer(),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.only(right: 16.0, left: 16.0),
+                                    child: InkWell(
+                                      onTap: () async {
+                                        print(
+                                            "launchingffffff ${listData.url}");
+                                        //
+                                        String url =
+                                        listData.url.toString();
+                                        if (await canLaunch(url))
+                                          await launch(url);
+                                        else
+                                          // can't launch url, there is some error
+                                          throw "Could not launch $url";
+                                        // Navigator.push(
+                                        //     context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) =>
+                                        //             WebViewPage(
+                                        //               url: listData.url!,
+                                        //             )));
+                                        print("launching");
+                                      },
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(8),
+                                            color: Colors.orange),
+                                        child: Text(
+                                          "Buy NOW",
+                                          style: GoogleFonts.roboto(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 10,
-                                    )
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else if (dataAds[index] is int) {
-                        return const SizedBox(
-                          height: 1,
-                        );
-                      } else {
-                        // if dataads[index] is object (ads) then show container with adWidget
-                        final Container adcontent = Container(
-                          child: AdWidget(
-                            ad: dataAds[index] as BannerAd,
-                            key: UniqueKey(),
-                          ),
-                          height: 10,
-                        );
-                        return adcontent;
-                      }
-                    },
+                                Spacer(),
+                              ],
+                            ),
+                          );
+                        } else if (dataAds[index] is int) {
+                          return const SizedBox(
+                            height: 1,
+                          );
+                        } else {
+                          // if dataads[index] is object (ads) then show container with adWidget
+                          final Container adcontent = Container(
+                            child: AdWidget(
+                              ad: dataAds[index] as BannerAd,
+                              key: UniqueKey(),
+                            ),
+                            height: 10,
+                          );
+                          return adcontent;
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                height: isLoading ? 50.0 : 0,
-                color: Colors.transparent,
-                child: Center(
-                  child: CircularProgressIndicator(),
+                Container(
+                  height: isLoading ? 50.0 : 0,
+                  color: Colors.transparent,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ));
+        ),
+        floatingActionButton: firstFetch
+            ? Container()
+            :Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_circle_up_sharp, color: Colors.white,),
+                color: Colors.orangeAccent,
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0.0,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                  setState(() {
+                    page = 1;
+                    trendingItems.clear();
+                    dataAds = [];
+                    firstFetch = true;
+                    fetchData = true;
+                  });
+                  fetchDeals(pageNumber: page);
+                },
+              ),
+            )));
   }
 
   @override
@@ -413,6 +563,5 @@ class _TrendingOffersState extends State<TrendingOffers> {
     super.dispose();
     page = 1;
     trendingItems.clear();
-    fetchMoreUpdatedProducts = false;
   }
 }

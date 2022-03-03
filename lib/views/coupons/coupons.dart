@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,17 +8,13 @@ import 'package:intl/intl.dart';
 import 'package:loot/config/asset_config.dart';
 import 'package:loot/model/offers_model.dart';
 import 'package:loot/provider/coupon_codes_provider.dart';
-import 'package:loot/provider/latest_deals_provider.dart';
-import 'package:loot/provider/updated_offers_provider.dart';
 import 'package:loot/views/details_page/deails_page.dart';
 import 'package:provider/provider.dart';
 import 'package:loot/config/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../admob_helper.dart';
-import '../vewb_view_page.dart';
 
 class CouponCodes extends StatefulWidget {
   @override
@@ -30,12 +24,22 @@ class CouponCodes extends StatefulWidget {
 }
 
 class _CouponCodesState extends State<CouponCodes> {
+  late FToast fToast;
   static int page = 1;
   final List<Data> couponItems = [];
   late List<Object> dataAds; // will store both data + banner ads
   bool isLoading = false;
   bool firstFetch = true;
-  late FToast fToast;
+  bool fetchData = true;
+  final ScrollController _scrollController = ScrollController();
+
+  onError(String error) {
+    setState(() {
+      fetchData = false;
+    });
+    _showToast(message: "something went wrong");
+    print("error ===> $error");
+  }
 
   _showToast({required String message}) {
     Widget toast = Container(
@@ -82,34 +86,125 @@ class _CouponCodesState extends State<CouponCodes> {
       if (value is String) {
         print(value);
       } else if (value.status == "success") {
-        Future.delayed(Duration(microseconds: 100));
         print(value.status);
         setState(() {
-          couponItems.addAll(value.data);
-          dataAds = List.from(couponItems);
           // insert admob banner object in between the array list
           // var rm = Random();
-          int loadAdd = (dataAds.length - value.data.length).toInt() + 2;
-          int loadAddStartFrom = (loadAdd - 2);
-          for (int i = loadAddStartFrom; i < dataAds.length; i++) {
-            //generate a random number from 2 to 18 (+ 1)
-            // var ranNumPosition = min + rm.nextInt(9);
-            //and add the banner ad to particular index of arraylist
-            if (i == (loadAdd)) {
-              loadAdd += 6;
-              if (i % 2 == 0) {
-                dataAds.insert(i, AdmobHelper.getBannerAd(adUnitId: 'ca-app-pub-3940256099942544/6300978111')..load());
-                dataAds.insert(i, i);
+          if (firstFetch) {
+            int checkEvenOrOdd = 0;
+            bool checkEvenOrOddFirstTime = true;
+            couponItems.addAll(value.data);
+            dataAds = List.from(couponItems);
+            int loadAdd = 2;
+            for (int i = 0; i < dataAds.length; i++) {
+              //generate a random number from 2 to 18 (+ 1)
+              // var ranNumPosition = min + rm.nextInt(9);
+              //and add the banner ad to particular index of arraylist
+              if (checkEvenOrOddFirstTime) {
+                if (i == loadAdd) {
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((i % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
+              } else {
+                if (i == loadAdd) {
+                  checkEvenOrOddFirstTime = false;
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((checkEvenOrOdd % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
+              }
+            }
+          } else {
+            for (int x = 0; x < 8; x++) {
+              if (dataAds[x] is Data) {
+                Data listData = dataAds[x] as Data;
+                print("before: ${listData.productId}");
+                dataAds[x] = value.data[x];
+                Data listDataAfter = dataAds[x] as Data;
+                print("after: ${listDataAfter.productId}");
+              } else {
+                dataAds[x] = value.data[x];
+              }
+            }
+            int loadAdd = 2;
+            int checkEvenOrOdd = 0;
+            bool checkEvenOrOddFirstTime = true;
+            for (int i = 0; i < 8; i++) {
+              //generate a random number from 2 to 18 (+ 1)
+              // var ranNumPosition = min + rm.nextInt(9);
+              //and add the banner ad to particular index of arraylist
+              if (checkEvenOrOddFirstTime) {
+                if (i == loadAdd) {
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((i % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
+              } else {
+                if (i == loadAdd) {
+                  checkEvenOrOddFirstTime = false;
+                  print("load add $loadAdd");
+                  loadAdd += 6;
+                  checkEvenOrOddFirstTime = false;
+                  if ((checkEvenOrOdd % 2 == 0)) {
+                    print("i is even");
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
+                    checkEvenOrOdd = i + 2;
+                  } else {
+                    print("i is odd");
+                  }
+                }
               }
             }
           }
-
           print('totalItems: ${value.data}');
+          fetchData = false;
           isLoading = false;
           firstFetch = false;
         });
       }
-    });
+    }).catchError((Object error) => onError(error.toString()));
   }
 
   Future _loadData() async {
@@ -125,19 +220,24 @@ class _CouponCodesState extends State<CouponCodes> {
     // update data and loading status
   }
 
-  String getDifference(DateTime date1, String date) {
-    print('date1 $date1');
-    print('date2 $date');
+  static DateTime date1 = DateTime.now();
+  String getDifference({required DateTime date1, required String date, required int index, required var productID, required var title}) {
+
+    print('$index) productID ($productID) => date1 $date1');
+    print('$index) productID ($productID) => date2 $date');
     var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
-    var date2 = inputFormat.parse(date);
-    print("minutes: ${date1.difference(date2).inMinutes}");
+    final date2 = inputFormat.parse(date);
     if (date1.difference(date2).inMinutes < 59) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inMinutes} mins");
       return "${date1.difference(date2).inMinutes} mins";
     } else if (date1.difference(date2).inHours <= 24) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inHours} hours");
       return "${date1.difference(date2).inHours} hours ";
     } else if (date1.difference(date2).inDays > 1) {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} days");
       return "${date1.difference(date2).inDays} days";
     } else {
+      print("$index) productID ($productID) => ${date1.difference(date2).inDays} day");
       return "${date1.difference(date2).inDays} day";
     }
   }
@@ -147,102 +247,81 @@ class _CouponCodesState extends State<CouponCodes> {
     return Scaffold(
         body: Container(
           color: Colors.grey.withOpacity(.2),
-          child: firstFetch
+          child: fetchData
               ? Center(child: CircularProgressIndicator())
-              : Column(
-            children: [
-              Expanded(
-                child: NotificationListener(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    print("scrollInfo: ${scrollInfo.metrics.pixels}");
-                    if (scrollInfo.metrics.pixels <= 5.0) {
-                      print("scrollInfo: ${scrollInfo.metrics.pixels}, true");
-                    }
-                    if (!isLoading &&
-                        scrollInfo.metrics.pixels ==
-                            scrollInfo.metrics.maxScrollExtent) {
-                      // start loading data
-                      setState(() {
-                        isLoading = true;
-                      });
-                      _loadData();
-                    }
-                    return false;
-                  },
-                  child: StaggeredGridView.countBuilder(
-                    itemCount: dataAds.length,
-                    shrinkWrap: true,
-                    primary: false,
-                    padding:
-                    const EdgeInsets.only(top: 20, left: 8, right: 8),
-                    // childAspectRatio:
-                    // getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
-                    staggeredTileBuilder: (int index) {
-                      if (dataAds[index] is Data) {
-                        print("dataAds[index] is Data: $index");
-                        return const StaggeredTile.count(1, 2.3);
-                      } else {
-                        print("dataAds[index] is not Data: $index");
-                        return const StaggeredTile.count(2, 0.4);
-                        // return const StaggeredTile.count(1, 1);
+              : firstFetch
+              ? Container()
+              : RefreshIndicator(
+            onRefresh: () {
+              setState(() {
+                page = 1;
+                couponItems.clear();
+                dataAds = [];
+                firstFetch = true;
+                fetchData = true;
+              });
+              return fetchDeals(pageNumber: page);
+            },
+            child: Column(
+              children: [
+                Expanded(
+                  child: NotificationListener(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (!isLoading &&
+                          scrollInfo.metrics.pixels ==
+                              scrollInfo.metrics.maxScrollExtent) {
+                        // start loading data
+                        setState(() {
+                          isLoading = true;
+                        });
+                        _loadData();
                       }
+                      return false;
                     },
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 8,
-                    itemBuilder: (context, index) {
-                      if (dataAds[index] is Data) {
-                        Data listData = dataAds[index] as Data;
-                        DateTime date1 = DateTime.now();
-                        String difference =
-                        getDifference(date1, listData.createdAt!);
-                        return Card(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              /*
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 0.0, top: 8.0),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(color: Colors.orange),
-                                    child: Text(
-                                      "${(((int.parse(latestItems[index].price!) - int.parse(latestItems[index].salePrice!)) / int.parse(latestItems[index].price!) ) * 100).toInt()} % off",
-                                      style: GoogleFonts.roboto(
-                                          color: Colors.white, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Image.network(
-                                    latestItems[index].logo!,
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                ),
-                              ],
-                            ),
+                    child: StaggeredGridView.countBuilder(
+                      controller: _scrollController,
+                      itemCount: dataAds.length,
+                      shrinkWrap: true,
+                      primary: false,
+                      padding:
+                      const EdgeInsets.only(top: 0, left: 8, right: 8),
+                      // childAspectRatio:
+                      // getDeviceWidth(context) / getDeviceHeight(context) / 1.05,
+                      staggeredTileBuilder: (int index) {
+                        if (dataAds[index] is Data) {
+                          // print("dataAds[index] is Data: $index");
+                          return const StaggeredTile.count(1, 2.1);
+                        } else {
+                          // print("dataAds[index] is not Data: $index");
+                          return const StaggeredTile.count(2, 0.4);
+                          // return const StaggeredTile.count(1, 1);
+                        }
+                      },
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 8,
+                      itemBuilder: (context, index) {
+                        if (dataAds[index] is Data) {
+                          Data listData = dataAds[index] as Data;
+                          date1 = DateTime.now().add(Duration(minutes: 30));
 
-                             */
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Image.asset(AssetConfig.kLootBag, width: 24, height: 24,)
+                          String difference =
+                          getDifference(date1: date1, index: index, title: listData.title, date: listData.createdAt!, productID: listData.id!);
+                          return Card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Image.asset(AssetConfig.kLootBag, width: 24, height: 24,)
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              InkWell(
-                                onTap:() => Navigator.push(context, MaterialPageRoute(
-                                    builder: (context) => ProductDetails(productID: couponItems[index].id!)
-                                )),
-                                child: Center(
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Center(
                                   child: Container(
                                     height: 100,
                                     width: getDeviceWidth(context) / 3,
@@ -251,163 +330,169 @@ class _CouponCodesState extends State<CouponCodes> {
                                       image: DecorationImage(
                                           fit: BoxFit.fill,
                                           image:
-                                          NetworkImage(couponItems[index].image!)),
+                                          NetworkImage("https://bestonlineloot.com/uploads/product_image/${listData.image!}")),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Align(
-                                    alignment: Alignment.topRight,
-                                    child: IconButton(
-                                      icon: Icon(Icons.share),
-                                      color: Colors.orangeAccent,
-                                      onPressed: () {
-                                        Share.share('Some text');
-                                      },
-                                    )),
-                              ),
-                              Divider(
-                                thickness: 2,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 8.0,
+                                SizedBox(
+                                  height: 20,
                                 ),
-                                child: Text(
-                                  couponItems[index].title!,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
-                                      color: Colors.black,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              /*
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8, right: 20.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "₹${latestItems[index].salePrice!}",
-                                    style: GoogleFonts.roboto(
-                                        color: Colors.green.shade500,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "₹${latestItems[index].price!}",
-                                    style: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Colors.grey.withOpacity(1)),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                             */
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8, left: 8,right: 20.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(couponItems[index].code!,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.roboto(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),),
-                                    ),
-                                    const Spacer(),
-                                    IconButton(onPressed: (){
-                                      Clipboard.setData(ClipboardData(text: couponItems[index].code!));
-                                      _showToast(message: "Copied to clipboard.");
-                                    }, icon: Icon(Icons.copy, color: Colors.orange,)),
-                                  ],
-                                ),
-                              ),
-                              Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 10, left: 8),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.access_time),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        "$difference",
-                                        style: GoogleFonts.roboto(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16,
-                                            color: Colors.black.withOpacity(1)),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 0, left: 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.access_time, size: 15,),
+                                      SizedBox(
+                                        width: 10,
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    )
-                                  ],
+                                      Expanded(
+                                        child: Text(
+                                          "$difference",
+                                          style: GoogleFonts.roboto(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: Colors.black
+                                                  .withOpacity(1)),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(right: 8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: IconButton(
+                                              icon: Icon(Icons.share, size: 25,),
+                                              color: Colors.orangeAccent,
+                                              onPressed: () {
+                                                Share.share(listData.url!);
+                                              },
+                                            )),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else if (dataAds[index] is int) {
-                        return const SizedBox(
-                          height: 1,
-                        );
-                      } else {
-                        // if dataads[index] is object (ads) then show container with adWidget
-                        final Container adcontent = Container(
-                          child: AdWidget(
-                            ad: dataAds[index] as BannerAd,
-                            key: UniqueKey(),
-                          ),
-                          height: 10,
-                        );
-                        return adcontent;
-                      }
-                    },
+                                Divider(
+                                  thickness: 2,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 8.0,
+                                  ),
+                                  child: Text(
+                                    listData.title!,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.roboto(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8, left: 8,right: 2.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(listData.code!,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.roboto(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),),
+                                      ),
+                                      const Spacer(),
+                                      IconButton(onPressed: (){
+                                        Clipboard.setData(ClipboardData(text: listData.code!));
+                                        _showToast(message: "Copied to clipboard.");
+                                      }, icon: Icon(Icons.copy, color: Colors.orange,)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (dataAds[index] is int) {
+                          return const SizedBox(
+                            height: 1,
+                          );
+                        } else {
+                          // if dataads[index] is object (ads) then show container with adWidget
+                          final Container adcontent = Container(
+                            child: AdWidget(
+                              ad: dataAds[index] as BannerAd,
+                              key: UniqueKey(),
+                            ),
+                            height: 10,
+                          );
+                          return adcontent;
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                height: isLoading ? 50.0 : 0,
-                color: Colors.transparent,
-                child: Center(
-                  child: CircularProgressIndicator(),
+                Container(
+                  height: isLoading ? 50.0 : 0,
+                  color: Colors.transparent,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ));
+        ),
+        floatingActionButton: firstFetch
+            ? Container()
+            :Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey,
+                  border: Border.all(
+                    color: Colors.grey,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_circle_up_sharp, color: Colors.white,),
+                color: Colors.orangeAccent,
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0.0,
+                    curve: Curves.easeOut,
+                    duration: const Duration(milliseconds: 300),
+                  );
+                  setState(() {
+                    page = 1;
+                    couponItems.clear();
+                    dataAds = [];
+                    firstFetch = true;
+                    fetchData = true;
+                  });
+                  fetchDeals(pageNumber: page);
+                },
+              ),
+            )));
   }
 
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast.init(context);
     fetchDeals(pageNumber: page);
-      fToast = FToast();
-      fToast.init(context);
   }
 
   @override
   void dispose() {
+    super.dispose();
     page = 1;
     couponItems.clear();
-    super.dispose();
   }
 }
