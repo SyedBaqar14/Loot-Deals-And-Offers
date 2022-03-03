@@ -4,6 +4,7 @@ import 'package:loot/admob_helper.dart';
 import 'package:loot/provider/LoginProvider.dart';
 import 'package:loot/provider/SignupProvider.dart';
 import 'package:loot/provider/coupon_codes_provider.dart';
+import 'package:loot/provider/email_verification_provider.dart';
 import 'package:loot/provider/latest_deals_provider.dart';
 import 'package:loot/provider/product_details_provider.dart';
 import 'package:loot/provider/search_provider.dart';
@@ -25,7 +26,8 @@ void main() {
       ChangeNotifierProvider.value(value: SearchProvider()),
       ChangeNotifierProvider.value(value: UpdatedOffersProvider()),
       ChangeNotifierProvider.value(value: LoginProvider()),
-      ChangeNotifierProvider.value(value: SignupProvider())
+      ChangeNotifierProvider.value(value: SignupProvider()),
+      ChangeNotifierProvider.value(value: EmailVerificationProvider())
     ],
     child: const MyApp(),
   ),);

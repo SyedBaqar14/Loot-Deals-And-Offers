@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +11,7 @@ class LoginProvider with ChangeNotifier {
     // print(password);
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final url = 'https://bestonlineloot.com/api/user/login';
+    const url = 'https://bestonlineloot.com/api/user/login';
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -27,15 +28,18 @@ class LoginProvider with ChangeNotifier {
 
       var result = json.decode(response.body);
 
-      print(result);
+      if (kDebugMode) {
+        print(result);
+      }
       if (result['status'] == "success") {
         prefs.setString("id", result['data']['id']);
         prefs.setString("name", result['data']['name']);
         prefs.setString("email", result['data']['email']);
         prefs.setString("phone", result['data']['phone']);
-        // prefs.setString("token", result['data']['token']);
+        prefs.setString("city", result['data']['city']);
+        prefs.setString("token", result['token']);
         // print(result['data']['name']);
-        print("city: ${result['data']['city']}");
+        // print("city: ${result['data']['city']}");
         // prefs.setBool("isLoggedIn", true);
         return 'success';
       } else if (result['status'] == "error") {

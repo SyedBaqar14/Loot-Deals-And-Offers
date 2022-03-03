@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loot/config/asset_config.dart';
 import 'package:loot/config/constants.dart';
 import 'package:loot/provider/SignupProvider.dart';
+import 'package:loot/provider/email_verification_provider.dart';
+import 'package:loot/routes/routes_names.dart';
 import 'package:provider/provider.dart';
 
 import '../../Heading.dart';
@@ -23,16 +25,16 @@ class _RegisterState extends State<Register> {
   bool isObsecure = true;
   late FToast fToast;
 
-  bool rememberMe = false;
+  bool subscribe = false;
 
-  void _onRememberMeChanged(bool? newValue) => setState(() {
-    rememberMe = newValue!;
+  void _onSubscribeChanged(bool? newValue) => setState(() {
+    subscribe = newValue!;
 
-    if (rememberMe) {
-      // TODO: Here goes your functionality that remembers the user.
-    } else {
-      // TODO: Forget the user
-    }
+    // if (subscribe) {
+    //   // TODO: Here goes your functionality that remembers the user.
+    // } else {
+    //   // TODO: Forget the user
+    // }
   });
 
   @override
@@ -89,31 +91,78 @@ class _RegisterState extends State<Register> {
     //     });
   }
 
-  signUpRequest({name, phone, email, password, cPassword}) async {
+  signUpRequest({name, phone, email, password, city, isSubscribe}) async {
     // pr.show();
-    await Provider.of<SignupProvider>(context, listen: false)
-        .signUp(
-            name: name,
-            phone: phone,
-            email: email,
-            password: password,
-            cPassword: cPassword)
-        .then((result) {
-      if (result['status'] == "success") {
-        _showToast(message: result['message']);
-        Navigator.of(context).pop;
-        // pr.hide();
-        // print(result['data']['message']);
-        // makeToast(mesage: result['data']['message'], context: context);
-        // Navigator.of(context).pushNamed(LoginScreen.routeName);
-      } else if (result['status'] == "error") {
-        _showToast(message: result['message']);
-        // pr.hide();
-        print("${result['message']}");
-      } else {
-        print("${result}");
-      }
-    });
+    if (isSubscribe)  {
+      await Provider.of<EmailVerificationProvider>(context, listen: false)
+          .verifyEmail(
+          email: email,)
+          .then((result) async {
+          if((result['deliverability']) == "UNDELIVERABLE") {
+            subscribe = false;
+          } else {
+            subscribe = true;
+          }
+          Future.delayed(Duration(milliseconds: 300));
+          await Provider.of<SignupProvider>(context, listen: false)
+              .signUp(
+              name: name,
+              phone: phone,
+              email: email,
+              password: password,
+              city: city,
+          subscribe: subscribe)
+              .then((result) {
+            if (result['status'] == "success") {
+              print("subscribe: $subscribe");
+              _showToast(message: result['message']);
+              Navigator.pushNamed(context, login);
+              // pr.hide();
+              // print(result['data']['message']);
+              // makeToast(mesage: result['data']['message'], context: context);
+              // Navigator.of(context).pushNamed(LoginScreen.routeName);
+            }
+            else if (result['status'] == "error") {
+              _showToast(message: result['message']);
+              // pr.hide();
+              print("${result['message']}");
+            }
+            else {
+              print("${result}");
+            }
+          });
+
+          // pr.hide();
+          // print(result['data']['message']);
+          // makeToast(mesage: result['data']['message'], context: context);
+          // Navigator.of(context).pushNamed(LoginScreen.routeName);
+      });
+    } else {
+      await Provider.of<SignupProvider>(context, listen: false)
+          .signUp(
+              name: name,
+              phone: phone,
+              email: email,
+              password: password,
+              city: city,
+              subscribe: isSubscribe)
+          .then((result) {
+        if (result['status'] == "success") {
+          _showToast(message: result['message']);
+          Navigator.of(context).pop;
+          // pr.hide();
+          // print(result['data']['message']);
+          // makeToast(mesage: result['data']['message'], context: context);
+          // Navigator.of(context).pushNamed(LoginScreen.routeName);
+        } else if (result['status'] == "error") {
+          _showToast(message: result['message']);
+          // pr.hide();
+          print("${result['message']}");
+        } else {
+          print("${result}");
+        }
+      });
+    }
   }
 
   late TextEditingController _controllerName;
@@ -145,6 +194,24 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                 ),
+                /*
+                Padding(
+                  padding: const EdgeInsets.only(left: 0, top: 20, right: 0),
+                  child: Image.asset(AssetConfig.kLootBag, height: 67.95,
+                    width: 120,),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, top: 2, right: 0),
+                  child: Text("Bestonlineloot.com",
+                    style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        color:
+                        Colors.black),),
+                ),
+
+                 */
+                /*
                 Row(
                   children: [
                     Padding(
@@ -168,6 +235,8 @@ class _RegisterState extends State<Register> {
                     ),
                   ],
                 ),
+
+                 */
                 Padding(
                   padding: const EdgeInsets.only(top: 20, left: 35),
                   child: Heading(
@@ -293,8 +362,8 @@ class _RegisterState extends State<Register> {
                   child: Row(
                     children: [
                       Checkbox(
-                          value: rememberMe,
-                          onChanged: _onRememberMeChanged
+                          value: subscribe,
+                          onChanged: _onSubscribeChanged
                       ),
                       const Text("Subscribe for product updates.")
                     ],
@@ -325,7 +394,8 @@ class _RegisterState extends State<Register> {
                               phone: _controllerPhone.text,
                               email: _controllerEmailAddress.text,
                               password: _controllerPassword.text,
-                              cPassword: _controllerCity.text);
+                              city: _controllerCity.text,
+                          isSubscribe: subscribe);
                         },
                         child: Text(
                           "Register",

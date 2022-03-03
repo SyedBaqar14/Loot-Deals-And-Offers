@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:loot/config/asset_config.dart';
 import 'package:loot/config/constants.dart';
 import 'package:loot/routes/routes_names.dart';
@@ -15,7 +17,6 @@ class SideNavigation extends StatefulWidget {
 }
 
 class _SideNavigationState extends State<SideNavigation> {
-
   late SharedPreferences prefs;
   String? name;
   String? email;
@@ -26,47 +27,109 @@ class _SideNavigationState extends State<SideNavigation> {
       child: Column(
         children: <Widget>[
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 35),
+            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 35),
             color: kUniversalColor,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    InkWell(
-                      onTap: () => Navigator.pushNamed(context, login),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50.0),
-                        child: Image.asset(
-                          AssetConfig.kLootLogo,
-                          height: 80.0,
-                          width: 80.0,
-                          fit: BoxFit.cover,
-                        ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(50.0),
+                      child: Image.asset(
+                        AssetConfig.kLootBag,
+                        height: 80.0,
+                        width: 80.0,
+                        fit: BoxFit.cover,
                       ),
                     ),
                     Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 5.0, left: 8),
-                          child: Text(
-                            name ?? "name",
-                            style: TextStyle(
-                              color: kSideNaveHeaderTitleColor,
-                              fontSize: 18,
-                              fontFamily: 'Poppins',
-                            ),
+                          padding: const EdgeInsets.only(top: 8.0, left: 5.0),
+                          child: InkWell(
+                            onTap: () => Navigator.pushNamed(context, login),
+                            child: Container(
+                                width: 100,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.orange),
+                                child: name != null
+                                ? Padding(
+                                  padding: const EdgeInsets.only(top: 5.0, left: 8),
+                                  child: Text(
+                                    name ?? "name",
+                                    style: TextStyle(
+                                      color: kSideNaveHeaderTitleColor,
+                                      fontSize: 18,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                )
+                                : Center(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        WidgetSpan(
+                                          child:
+                                              Icon(Icons.lock_open, size: 14),
+                                        ),
+                                        TextSpan(
+                                          text: " Login",
+                                          style: GoogleFonts.roboto(
+                                            color: Colors.white.withOpacity(.8),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 5.0, left: 8),
-                          child: Text(
-                            email ?? "email",
-                            style: TextStyle(
-                              color: kSideNaveHeaderTitleColor,
-                              fontSize: 18,
-                              fontFamily: 'Poppins',
-                            ),
+                          padding: const EdgeInsets.only(top: 8.0, left: 5.0),
+                          child: InkWell(
+                            onTap: () => Navigator.pushNamed(context, register),
+                            child: Container(
+                                width: 100,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.orange),
+                                child: email != null
+                                ? Padding(
+                                  padding: const EdgeInsets.only(top: 5.0, left: 8),
+                                  child: Text(
+                                    email ?? "email",
+                                    style: TextStyle(
+                                      color: kSideNaveHeaderTitleColor,
+                                      fontSize: 18,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                )
+                                : Center(
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        WidgetSpan(
+                                          child:
+                                          Icon(Icons.lock_open, size: 14),
+                                        ),
+                                        TextSpan(
+                                          text: " Signup",
+                                          style: GoogleFonts.roboto(
+                                            color: Colors.white.withOpacity(.8),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )),
                           ),
                         ),
                       ],
@@ -172,10 +235,10 @@ class _SideNavigationState extends State<SideNavigation> {
 
               String url = "https://bestonlineloot.com/policy-policy";
               if (await canLaunch(url))
-              await launch(url);
+                await launch(url);
               else
-              // can't launch url, there is some error
-              throw "Could not launch $url";
+                // can't launch url, there is some error
+                throw "Could not launch $url";
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(builder: (context) => const PrivacyPolicy()),
@@ -218,6 +281,7 @@ class _SideNavigationState extends State<SideNavigation> {
       email = prefs.getString('email');
     });
   }
+
   @override
   void initState() {
     initializeShared();

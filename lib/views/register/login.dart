@@ -21,8 +21,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isObsecure = true;
   bool _isloading = false;
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   late FToast fToast;
 
   // ProgressDialog pr;
@@ -45,10 +45,10 @@ class _LoginScreenState extends State<LoginScreen> {
       var emailaddress = prefs.getString('email');
       var ppassword = prefs.getString('password');
 
-      if (emailaddress != null && password != null) {
+      if (emailaddress != null && passwordController != null) {
         setState(() {
-          email = TextEditingController(text: emailaddress);
-          password = TextEditingController(text: ppassword);
+          emailController = TextEditingController(text: emailaddress);
+          passwordController = TextEditingController(text: ppassword);
         });
       }
     } catch (e) {
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _isloading = true;
     });
     await Provider.of<LoginProvider>(context, listen: false)
-        .getLogin(email: email.text, password: password.text)
+        .getLogin(email: emailController.text, password: passwordController.text)
         .then((user) {
       print(user);
       setState(() {
@@ -153,6 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             (Route<dynamic> route) => false);
                   }),
                 ),
+                /*
                 Row(
                   children: [
                     Padding(
@@ -175,6 +176,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
+
+                 */
+                Center(child: Image.asset(AssetConfig.kLootBag, width: 100, height: 100,)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Center(child: Text("Bestonlineloot.com",
+                  style: GoogleFonts.roboto(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                      color:
+                      Colors.black),)),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 50, left: 35),
                   child: Heading(
@@ -184,10 +197,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, left: 35, right: 35),
                   child: TextFormField(
-                    controller: email,
+                    controller: emailController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.email, size: 20,),
-                      labelText: "Email",
+                      labelText: "Email/Mobile",
                       labelStyle: GoogleFonts.roboto(
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
@@ -199,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 30, left: 35, right: 35),
                   child: TextFormField(
-                    controller: password,
+                    controller: passwordController,
                     obscureText: isObsecure,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.admin_panel_settings),
