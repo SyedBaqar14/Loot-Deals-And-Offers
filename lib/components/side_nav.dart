@@ -39,36 +39,37 @@ class _SideNavigationState extends State<SideNavigation> {
                       borderRadius: BorderRadius.circular(50.0),
                       child: Image.asset(
                         AssetConfig.kLootBag,
-                        height: 80.0,
-                        width: 80.0,
-                        fit: BoxFit.cover,
+                        height: 70.0,
+                        width: 70.0,
+                        fit: BoxFit.contain,
                       ),
                     ),
                     Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, left: 5.0),
+                        name != null
+                            ? Padding(
+                          padding: const EdgeInsets.only(top: 5.0, left: 8),
+                          child: Text(
+                            name ?? "name",
+                            style: TextStyle(
+                              color: kSideNaveHeaderTitleColor,
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              overflow: TextOverflow.ellipsis
+                            ),
+                          ),
+                        )
+                        : Padding(
+                          padding: const EdgeInsets.only(top: 8.0, left: 30.0),
                           child: InkWell(
                             onTap: () => Navigator.pushNamed(context, login),
                             child: Container(
-                                width: 100,
+                                width: 150,
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     color: Colors.orange),
-                                child: name != null
-                                ? Padding(
-                                  padding: const EdgeInsets.only(top: 5.0, left: 8),
-                                  child: Text(
-                                    name ?? "name",
-                                    style: TextStyle(
-                                      color: kSideNaveHeaderTitleColor,
-                                      fontSize: 18,
-                                      fontFamily: 'Poppins',
-                                    ),
-                                  ),
-                                )
-                                : Center(
+                                child: Center(
                                   child: RichText(
                                     text: TextSpan(
                                       children: [
@@ -89,29 +90,30 @@ class _SideNavigationState extends State<SideNavigation> {
                                 )),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, left: 5.0),
+                        email != null
+                        ? Padding(
+                          padding: const EdgeInsets.only(top: 5.0, left: 8),
+                          child: Text(
+                            email ?? "email",
+                            style: TextStyle(
+                              color: kSideNaveHeaderTitleColor,
+                              fontSize: 14,
+                              fontFamily: 'Poppins',
+                              overflow: TextOverflow.ellipsis
+                            ),
+                          ),
+                        )
+                        : Padding(
+                          padding: const EdgeInsets.only(top: 8.0, left: 30.0),
                           child: InkWell(
                             onTap: () => Navigator.pushNamed(context, register),
                             child: Container(
-                                width: 100,
+                                width: 150,
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     color: Colors.orange),
-                                child: email != null
-                                ? Padding(
-                                  padding: const EdgeInsets.only(top: 5.0, left: 8),
-                                  child: Text(
-                                    email ?? "email",
-                                    style: TextStyle(
-                                      color: kSideNaveHeaderTitleColor,
-                                      fontSize: 18,
-                                      fontFamily: 'Poppins',
-                                    ),
-                                  ),
-                                )
-                                : Center(
+                                child: Center(
                                   child: RichText(
                                     text: TextSpan(
                                       children: [
@@ -210,23 +212,6 @@ class _SideNavigationState extends State<SideNavigation> {
               color: kSideNaveIconColor,
             ),
             title: Text(
-              'About Us',
-              style: TextStyle(color: kSideNaveTextColor, fontSize: 14),
-            ),
-            onTap: () => {
-              Navigator.of(context).pop(),
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AboutUs()),
-              ),
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.info,
-              color: kSideNaveIconColor,
-            ),
-            title: Text(
               'Privacy Policy',
               style: TextStyle(color: kSideNaveTextColor, fontSize: 14),
             ),
@@ -266,6 +251,40 @@ class _SideNavigationState extends State<SideNavigation> {
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(builder: (context) => const PrivacyPolicy()),
+              // ),
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.info,
+              color: kSideNaveIconColor,
+            ),
+            title: Text(
+              'About Us',
+              style: TextStyle(color: kSideNaveTextColor, fontSize: 14),
+            ),
+            onTap: () => {
+              Navigator.of(context).pop(),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutUs()),
+              ),
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.logout,
+              color: kSideNaveIconColor,
+            ),
+            title: Text(
+              'Logout',
+              style: TextStyle(color: kSideNaveTextColor, fontSize: 14),
+            ),
+            onTap: () => {
+              Navigator.of(context).pop(),
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const AboutUs()),
               // ),
             },
           ),

@@ -128,12 +128,12 @@ class _LatestOffersState extends State<LatestOffers> {
                   checkEvenOrOddFirstTime = false;
                   if ((checkEvenOrOdd % 2 == 0)) {
                     print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
+                    // dataAds.insert(i, i);
+                    // dataAds.insert(
+                    //     i,
+                    //     AdmobHelper.getBannerAd(
+                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                    //       ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
                     print("i is odd");
@@ -143,6 +143,7 @@ class _LatestOffersState extends State<LatestOffers> {
             }
           }
 
+          /*
           else {
             for (int x = 0; x < 8; x++) {
               if (dataAds[x] is Data) {
@@ -169,12 +170,12 @@ class _LatestOffersState extends State<LatestOffers> {
                   checkEvenOrOddFirstTime = false;
                   if ((i % 2 == 0)) {
                     print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
+                    // dataAds.insert(i, i);
+                    // dataAds.insert(
+                    //     i,
+                    //     AdmobHelper.getBannerAd(
+                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                    //       ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
                     print("i is odd");
@@ -188,12 +189,12 @@ class _LatestOffersState extends State<LatestOffers> {
                   checkEvenOrOddFirstTime = false;
                   if ((checkEvenOrOdd % 2 == 0)) {
                     print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
+                    // dataAds.insert(i, i);
+                    // dataAds.insert(
+                    //     i,
+                    //     AdmobHelper.getBannerAd(
+                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                    //       ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
                     print("i is odd");
@@ -202,6 +203,8 @@ class _LatestOffersState extends State<LatestOffers> {
               }
             }
           }
+
+           */
           print('totalItems: ${value.data}');
           fetchData = false;
           isLoading = false;
@@ -234,12 +237,12 @@ class _LatestOffersState extends State<LatestOffers> {
             if (i == (loadAdd)) {
               loadAdd += 6;
               if (i % 2 == 0) {
-                dataAds.insert(
-                    i,
-                    AdmobHelper.getBannerAd(
-                        adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                      ..load());
-                dataAds.insert(i, i);
+                // dataAds.insert(
+                //     i,
+                //     AdmobHelper.getBannerAd(
+                //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                //       ..load());
+                // dataAds.insert(i, i);
               }
             }
           }

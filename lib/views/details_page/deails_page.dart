@@ -194,7 +194,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               icon: Icon(Icons.share, size: 25,),
                               color: Colors.orangeAccent,
                               onPressed: () {
-                                Share.share('Some text');
+                                Share.share(data.url.toString());
                               },
                             )),
                       ],

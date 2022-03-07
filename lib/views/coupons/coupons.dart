@@ -303,7 +303,7 @@ class _CouponCodesState extends State<CouponCodes> {
                       itemBuilder: (context, index) {
                         if (dataAds[index] is Data) {
                           Data listData = dataAds[index] as Data;
-                          date1 = DateTime.now().add(Duration(minutes: 30));
+                          date1 = DateTime.now();
 
                           String difference =
                           getDifference(date1: date1, index: index, title: listData.title, date: listData.createdAt!, productID: listData.id!);

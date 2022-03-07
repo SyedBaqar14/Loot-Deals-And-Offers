@@ -6,4 +6,5 @@ class AssetConfig {
   static const String kTrending = 'assets/trending.png';
   static const String kLootBag = "assets/lootbag.png";
   static const String kLootLogo = "assets/logo.png";
+  static const String kLootHeart = "assets/heart.png";
 }

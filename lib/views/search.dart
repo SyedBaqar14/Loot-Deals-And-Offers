@@ -276,7 +276,7 @@ class _SearchState extends State<Search> {
 
                       if(latestOffers) {
                         Data listData = searchItems[index];
-                        date1 = DateTime.now().add(const Duration(minutes: 30));
+                        date1 = DateTime.now();
 
                         String difference =
                         getDifference(date1: date1, index: index, title: listData.title, date: listData.updatedAt!, productID: listData.productId!);
@@ -477,7 +477,7 @@ class _SearchState extends State<Search> {
                         );
                       } else if (trendingOffers) {
                           Data listData = searchItems[index];
-                          date1 = DateTime.now().add(const Duration(minutes: 30));
+                          date1 = DateTime.now();
 
                           String difference =
                           getDifference(date1: date1, index: index, title: listData.title, date: listData.createdAt!, productID: listData.id!);
@@ -658,7 +658,7 @@ class _SearchState extends State<Search> {
                           );
                         } else {
                         Data listData = searchItems[index];
-                        date1 = DateTime.now().add(const Duration(minutes: 30));
+                        date1 = DateTime.now();
                         String difference =
                         getDifference(date1: date1, index: index, title: listData.title, date: listData.createdAt!, productID: listData.id!);
                         return Card(
