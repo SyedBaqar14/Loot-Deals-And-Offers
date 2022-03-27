@@ -5,7 +5,6 @@ const Color kUniversalColor = themeColor;
 
 const Color appBarBackgroundColor = themeColor;
 
-
 Color kTextTitleColor = Colors.white;
 const Color kTextPriceColor = Colors.black;
 Color kTextDurationColor = Colors.deepOrange.shade500;
@@ -22,5 +21,3 @@ Color kSideNaveTextColor = Colors.black;
 
 getDeviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
 getDeviceHeight(BuildContext context) => MediaQuery.of(context).size.height;
-
-

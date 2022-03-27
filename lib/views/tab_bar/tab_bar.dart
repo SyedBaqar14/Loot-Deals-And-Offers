@@ -27,7 +27,7 @@ class TabBarLoot extends StatelessWidget {
           const SystemUiOverlayStyle(statusBarColor: appBarBackgroundColor),
           centerTitle: true,
           title: Text(
-            'Loot',
+            'bestonlineloot.com',
             style: TextStyle(color: kTextTitleColor),
           ),
           backgroundColor: appBarBackgroundColor,
@@ -42,69 +42,10 @@ class TabBarLoot extends StatelessWidget {
             ],
           ),
           actions: <Widget>[
-            InkWell(
-              onTap: () {
-                // showCupertinoDialog(
-                //     context: context,
-                //     builder: (context) {
-                //       return CupertinoAlertDialog(
-                //         title: const Text("Logout"),
-                //         content:
-                //         const Text("Are your sure you want to logout"),
-                //         actions: [
-                //           TextButton(
-                //               onPressed: () => Navigator.of(context).pop(),
-                //               child: Text("No")),
-                //           TextButton(
-                //               onPressed: () => Navigator.pushAndRemoveUntil(
-                //                   context,
-                //                   MaterialPageRoute(
-                //                       builder: (context) => SignIn()),
-                //                       (route) => false),
-                //               child: Text("Yes")),
-                //         ],
-                //       );
-                //     });
-              },
-              child: IconButton(icon: Icon(Icons.search, color: Colors.white,),
-                  onPressed: () {
-                    Navigator.pushNamed(context, search);
-                  })
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: InkWell(
-                onTap: () {
-                  // showCupertinoDialog(
-                  //     context: context,
-                  //     builder: (context) {
-                  //       return CupertinoAlertDialog(
-                  //         title: const Text("Logout"),
-                  //         content:
-                  //         const Text("Are your sure you want to logout"),
-                  //         actions: [
-                  //           TextButton(
-                  //               onPressed: () => Navigator.of(context).pop(),
-                  //               child: Text("No")),
-                  //           TextButton(
-                  //               onPressed: () => Navigator.pushAndRemoveUntil(
-                  //                   context,
-                  //                   MaterialPageRoute(
-                  //                       builder: (context) => SignIn()),
-                  //                       (route) => false),
-                  //               child: Text("Yes")),
-                  //         ],
-                  //       );
-                  //     });
-                },
-                child: const Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Icon(Icons.notifications,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
+            IconButton(icon: Icon(Icons.search, color: Colors.white,),
+                onPressed: () {
+                  Navigator.pushNamed(context, search);
+                }),
           ],
         ),
         body: const TabBarView(

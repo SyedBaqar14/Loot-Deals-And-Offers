@@ -85,118 +85,125 @@ class _CouponCodesState extends State<CouponCodes> {
         .then((value) {
       if (value is String) {
         print(value);
-      } else if (value.status == "success") {
+      }
+      else if (value.status == "success") {
         print(value.status);
         setState(() {
           // insert admob banner object in between the array list
           // var rm = Random();
-          if (firstFetch) {
-            int checkEvenOrOdd = 0;
-            bool checkEvenOrOddFirstTime = true;
-            couponItems.addAll(value.data);
-            dataAds = List.from(couponItems);
-            int loadAdd = 2;
-            for (int i = 0; i < dataAds.length; i++) {
-              //generate a random number from 2 to 18 (+ 1)
-              // var ranNumPosition = min + rm.nextInt(9);
-              //and add the banner ad to particular index of arraylist
-              if (checkEvenOrOddFirstTime) {
-                if (i == loadAdd) {
-                  print("load add $loadAdd");
-                  loadAdd += 6;
-                  checkEvenOrOddFirstTime = false;
-                  if ((i % 2 == 0)) {
-                    print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
-                    checkEvenOrOdd = i + 2;
-                  } else {
-                    print("i is odd");
+          if (value.data.isNotEmpty) {
+            if (firstFetch) {
+              int checkEvenOrOdd = 0;
+              bool checkEvenOrOddFirstTime = true;
+              couponItems.addAll(value.data);
+              dataAds = List.from(couponItems);
+              int loadAdd = 2;
+              for (int i = 0; i < dataAds.length; i++) {
+                //generate a random number from 2 to 18 (+ 1)
+                // var ranNumPosition = min + rm.nextInt(9);
+                //and add the banner ad to particular index of arraylist
+                if (checkEvenOrOddFirstTime) {
+                  if (i == loadAdd) {
+                    print("load add $loadAdd");
+                    loadAdd += 6;
+                    checkEvenOrOddFirstTime = false;
+                    if ((i % 2 == 0)) {
+                      print("i is even");
+                      dataAds.insert(i, i);
+                      dataAds.insert(
+                          i,
+                          AdmobHelper.getBannerAd(
+                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                            ..load());
+                      checkEvenOrOdd = i + 2;
+                    } else {
+                      print("i is odd");
+                    }
                   }
-                }
-              } else {
-                if (i == loadAdd) {
-                  checkEvenOrOddFirstTime = false;
-                  print("load add $loadAdd");
-                  loadAdd += 6;
-                  checkEvenOrOddFirstTime = false;
-                  if ((checkEvenOrOdd % 2 == 0)) {
-                    print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
-                    checkEvenOrOdd = i + 2;
-                  } else {
-                    print("i is odd");
-                  }
-                }
-              }
-            }
-          } else {
-            for (int x = 0; x < 8; x++) {
-              if (dataAds[x] is Data) {
-                Data listData = dataAds[x] as Data;
-                print("before: ${listData.productId}");
-                dataAds[x] = value.data[x];
-                Data listDataAfter = dataAds[x] as Data;
-                print("after: ${listDataAfter.productId}");
-              } else {
-                dataAds[x] = value.data[x];
-              }
-            }
-            int loadAdd = 2;
-            int checkEvenOrOdd = 0;
-            bool checkEvenOrOddFirstTime = true;
-            for (int i = 0; i < 8; i++) {
-              //generate a random number from 2 to 18 (+ 1)
-              // var ranNumPosition = min + rm.nextInt(9);
-              //and add the banner ad to particular index of arraylist
-              if (checkEvenOrOddFirstTime) {
-                if (i == loadAdd) {
-                  print("load add $loadAdd");
-                  loadAdd += 6;
-                  checkEvenOrOddFirstTime = false;
-                  if ((i % 2 == 0)) {
-                    print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
-                    checkEvenOrOdd = i + 2;
-                  } else {
-                    print("i is odd");
-                  }
-                }
-              } else {
-                if (i == loadAdd) {
-                  checkEvenOrOddFirstTime = false;
-                  print("load add $loadAdd");
-                  loadAdd += 6;
-                  checkEvenOrOddFirstTime = false;
-                  if ((checkEvenOrOdd % 2 == 0)) {
-                    print("i is even");
-                    dataAds.insert(i, i);
-                    dataAds.insert(
-                        i,
-                        AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                          ..load());
-                    checkEvenOrOdd = i + 2;
-                  } else {
-                    print("i is odd");
+                } else {
+                  if (i == loadAdd) {
+                    checkEvenOrOddFirstTime = false;
+                    print("load add $loadAdd");
+                    loadAdd += 6;
+                    checkEvenOrOddFirstTime = false;
+                    if ((checkEvenOrOdd % 2 == 0)) {
+                      print("i is even");
+                      dataAds.insert(i, i);
+                      dataAds.insert(
+                          i,
+                          AdmobHelper.getBannerAd(
+                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                            ..load());
+                      checkEvenOrOdd = i + 2;
+                    } else {
+                      print("i is odd");
+                    }
                   }
                 }
               }
             }
+            else {
+              for (int x = 0; x < 8; x++) {
+                if (dataAds[x] is Data) {
+                  Data listData = dataAds[x] as Data;
+                  print("before: ${listData.productId}");
+                  dataAds[x] = value.data[x];
+                  Data listDataAfter = dataAds[x] as Data;
+                  print("after: ${listDataAfter.productId}");
+                } else {
+                  dataAds[x] = value.data[x];
+                }
+              }
+              int loadAdd = 2;
+              int checkEvenOrOdd = 0;
+              bool checkEvenOrOddFirstTime = true;
+              for (int i = 0; i < 8; i++) {
+                //generate a random number from 2 to 18 (+ 1)
+                // var ranNumPosition = min + rm.nextInt(9);
+                //and add the banner ad to particular index of arraylist
+                if (checkEvenOrOddFirstTime) {
+                  if (i == loadAdd) {
+                    print("load add $loadAdd");
+                    loadAdd += 6;
+                    checkEvenOrOddFirstTime = false;
+                    if ((i % 2 == 0)) {
+                      print("i is even");
+                      dataAds.insert(i, i);
+                      dataAds.insert(
+                          i,
+                          AdmobHelper.getBannerAd(
+                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                            ..load());
+                      checkEvenOrOdd = i + 2;
+                    } else {
+                      print("i is odd");
+                    }
+                  }
+                } else {
+                  if (i == loadAdd) {
+                    checkEvenOrOddFirstTime = false;
+                    print("load add $loadAdd");
+                    loadAdd += 6;
+                    checkEvenOrOddFirstTime = false;
+                    if ((checkEvenOrOdd % 2 == 0)) {
+                      print("i is even");
+                      dataAds.insert(i, i);
+                      dataAds.insert(
+                          i,
+                          AdmobHelper.getBannerAd(
+                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                            ..load());
+                      checkEvenOrOdd = i + 2;
+                    } else {
+                      print("i is odd");
+                    }
+                  }
+                }
+              }
+            }
+          }
+          else {
+            _showToast(message: "no more deals");
           }
           print('totalItems: ${value.data}');
           fetchData = false;
@@ -229,10 +236,18 @@ class _CouponCodesState extends State<CouponCodes> {
     final date2 = inputFormat.parse(date);
     if (date1.difference(date2).inMinutes < 59) {
       print("$index) productID ($productID) => ${date1.difference(date2).inMinutes} mins");
-      return "${date1.difference(date2).inMinutes} mins";
+      if(date1.difference(date2).inMinutes > 1) {
+        return "${date1.difference(date2).inMinutes} mins";
+      } else {
+        return "${date1.difference(date2).inMinutes} min";
+      }
     } else if (date1.difference(date2).inHours <= 24) {
       print("$index) productID ($productID) => ${date1.difference(date2).inHours} hours");
-      return "${date1.difference(date2).inHours} hours ";
+      if (date1.difference(date2).inHours > 1) {
+        return "${date1.difference(date2).inHours} hrs ";
+      } else {
+        return "${date1.difference(date2).inHours} hr ";
+      }
     } else if (date1.difference(date2).inDays > 1) {
       print("$index) productID ($productID) => ${date1.difference(date2).inDays} days");
       return "${date1.difference(date2).inDays} days";

@@ -17,20 +17,12 @@ class CustomRoutes {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case tabBar:
         return MaterialPageRoute(builder: (_) => const TabBarLoot());
-      // case signUp:
-      //   return MaterialPageRoute(builder: (_) => const SignUp());
-      // case verifyEmail:
-      //   return MaterialPageRoute(builder: (_) => const VerifyEmail());
-      // case home:
-      //   return MaterialPageRoute(builder: (_) => const Home());
       case latestDeals:
         return MaterialPageRoute(builder: (_) => const LatestOffers());
       case trendingDeals:
         return MaterialPageRoute(builder: (_) => const TrendingOffers());
       case coupon:
         return MaterialPageRoute(builder: (_) => const CouponCodes());
-      // case productDetails:
-      //   return MaterialPageRoute(builder: (_) => const ProductDetails());
       case login:
         return MaterialPageRoute(builder: (_) =>  LoginScreen());
       case register:

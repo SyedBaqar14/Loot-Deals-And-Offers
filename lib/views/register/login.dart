@@ -6,6 +6,7 @@ import 'package:loot/Heading.dart';
 import 'package:loot/components/skip_btn.dart';
 import 'package:loot/config/asset_config.dart';
 import 'package:loot/config/constants.dart';
+import 'package:loot/main.dart';
 import 'package:loot/provider/LoginProvider.dart';
 import 'package:loot/routes/routes_names.dart';
 import 'package:loot/views/tab_bar/tab_bar.dart';
@@ -72,8 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isloading = true;
     });
+    print("deviceToken: ${TemClass.token}");
     await Provider.of<LoginProvider>(context, listen: false)
-        .getLogin(email: emailController.text, password: passwordController.text)
+        .getLogin(email: emailController.text, password: passwordController.text,
+    deviceToken: TemClass.token)
         .then((user) {
       print(user);
       setState(() {

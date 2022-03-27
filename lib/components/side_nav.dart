@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:loot/config/asset_config.dart';
 import 'package:loot/config/constants.dart';
 import 'package:loot/routes/routes_names.dart';
 import 'package:loot/views/about_us/about_us.dart';
-import 'package:loot/views/about_us/privacy_policy.dart';
-import 'package:loot/views/about_us/terms_and_conditions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../views/latest_deals/latest_deals.dart';
 
 class SideNavigation extends StatefulWidget {
   @override
@@ -53,7 +49,7 @@ class _SideNavigationState extends State<SideNavigation> {
                             name ?? "name",
                             style: TextStyle(
                               color: kSideNaveHeaderTitleColor,
-                              fontSize: 14,
+                              fontSize: 16,
                               fontFamily: 'Poppins',
                               overflow: TextOverflow.ellipsis
                             ),
@@ -78,7 +74,7 @@ class _SideNavigationState extends State<SideNavigation> {
                                               Icon(Icons.lock_open, size: 14),
                                         ),
                                         TextSpan(
-                                          text: " Login",
+                                          text: "   Login",
                                           style: GoogleFonts.roboto(
                                             color: Colors.white.withOpacity(.8),
                                             fontWeight: FontWeight.bold,
@@ -119,10 +115,10 @@ class _SideNavigationState extends State<SideNavigation> {
                                       children: [
                                         WidgetSpan(
                                           child:
-                                          Icon(Icons.lock_open, size: 14),
+                                          Icon(Icons.login_outlined, size: 14),
                                         ),
                                         TextSpan(
-                                          text: " Signup",
+                                          text: "   Signup",
                                           style: GoogleFonts.roboto(
                                             color: Colors.white.withOpacity(.8),
                                             fontWeight: FontWeight.bold,
@@ -191,23 +187,6 @@ class _SideNavigationState extends State<SideNavigation> {
           ),
           ListTile(
             leading: Icon(
-              Icons.notifications,
-              color: kSideNaveIconColor,
-            ),
-            title: Text(
-              'Notification',
-              style: TextStyle(color: kSideNaveTextColor, fontSize: 14),
-            ),
-            onTap: () => {
-              Navigator.of(context).pop(),
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => const LatestOffers()),
-              // ),
-            },
-          ),
-          ListTile(
-            leading: Icon(
               Icons.info,
               color: kSideNaveIconColor,
             ),
@@ -256,7 +235,7 @@ class _SideNavigationState extends State<SideNavigation> {
           ),
           ListTile(
             leading: Icon(
-              Icons.info,
+              Icons.contact_page_outlined,
               color: kSideNaveIconColor,
             ),
             title: Text(
@@ -271,7 +250,8 @@ class _SideNavigationState extends State<SideNavigation> {
               ),
             },
           ),
-          ListTile(
+          name != null
+          ? ListTile(
             leading: Icon(
               Icons.logout,
               color: kSideNaveIconColor,
@@ -287,7 +267,8 @@ class _SideNavigationState extends State<SideNavigation> {
               //   MaterialPageRoute(builder: (context) => const AboutUs()),
               // ),
             },
-          ),
+          )
+          : Container()
         ],
       ),
     );

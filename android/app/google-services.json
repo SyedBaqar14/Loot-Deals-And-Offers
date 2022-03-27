@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "358371546546",
+    "project_id": "lootapp2022",
+    "storage_bucket": "lootapp2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358371546546:android:f7ba7a156abe3d26f200ab",
+        "android_client_info": {
+          "package_name": "com.app.loot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358371546546-b475fq2i8u07gjqhfoer2ksfiuolb6ca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvkOX5Jn8RutD9MuHfbiiIAXd6lBcCEPY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358371546546-b475fq2i8u07gjqhfoer2ksfiuolb6ca.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

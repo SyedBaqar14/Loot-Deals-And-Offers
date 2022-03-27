@@ -8,7 +8,6 @@ import 'package:loot/config/asset_config.dart';
 import 'package:loot/model/offers_model.dart';
 import 'package:loot/provider/search_provider.dart';
 import 'package:loot/views/details_page/deails_page.dart';
-import 'package:loot/views/vewb_view_page.dart';
 import 'package:provider/provider.dart';
 import 'package:loot/config/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -58,6 +57,7 @@ class _SearchState extends State<Search> {
           print('totalItems: ${value.totalItems}');
           isLoading = false;
           firstFetch = false;
+          searchItems.clear();
           _showToast(message: "No results found");
           return;
         });
@@ -174,6 +174,7 @@ class _SearchState extends State<Search> {
                               )),
                           onPressed: (){
                             setState(() {
+                              searchController.clear();
                               searchItems.clear();
                               couponCodes = false;
                               trendingOffers = false;
@@ -190,7 +191,7 @@ class _SearchState extends State<Search> {
                       padding: const EdgeInsets.only(left: 16.0),
                       child: OutlinedButton(
                         // style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white), side: ),
-                          style: OutlinedButton.styleFrom(fixedSize: Size.fromWidth(150),
+                          style: OutlinedButton.styleFrom(fixedSize: Size.fromWidth(160),
                               backgroundColor: trendingOffers? kUniversalColor : Colors.white,
                               shape:  RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0),
@@ -200,6 +201,7 @@ class _SearchState extends State<Search> {
                               )),
                           onPressed: (){
                             setState(() {
+                              searchController.clear();
                               searchItems.clear();
                               latestOffers = false;
                               couponCodes = false;
@@ -226,6 +228,7 @@ class _SearchState extends State<Search> {
                               )),
                           onPressed: (){
                             setState(() {
+                              searchController.clear();
                               searchItems.clear();
                               latestOffers = false;
                               couponCodes = true;
@@ -323,7 +326,8 @@ class _SearchState extends State<Search> {
                                         builder: (context) =>
                                             ProductDetails(
                                                 productID:
-                                                listData.id!))),
+                                                listData.id!,
+                                            isLatestProductDetails: true,))),
                                 child: Center(
                                   child: Container(
                                     height: 100,
@@ -509,16 +513,26 @@ class _SearchState extends State<Search> {
                                 SizedBox(
                                   height: 20,
                                 ),
-                                Center(
-                                  child: Container(
-                                    height: 100,
-                                    width: getDeviceWidth(context) / 3,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.fill,
-                                          image:
-                                          NetworkImage(listData.imge!)),
+                                InkWell(
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProductDetails(
+                                                productID:
+                                                listData.id!,
+                                                isLatestProductDetails: false,))),
+                                  child: Center(
+                                    child: Container(
+                                      height: 100,
+                                      width: getDeviceWidth(context) / 3,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image:
+                                            NetworkImage(listData.imge!)),
+                                      ),
                                     ),
                                   ),
                                 ),

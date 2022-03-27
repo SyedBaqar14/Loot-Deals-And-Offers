@@ -36,11 +36,14 @@ class _LatestOffersState extends State<LatestOffers> {
   final ScrollController _scrollController = ScrollController();
 
   onError(String error) {
+    print("error===> $error");
     setState(() {
       fetchData = false;
+      // isLoading = false;
+      // firstFetch = false;
     });
     _showToast(message: "something went wrong");
-    print("error ===> $error");
+
   }
 
   _showToast({required String message}) {
@@ -82,6 +85,7 @@ class _LatestOffersState extends State<LatestOffers> {
   }
 
   fetchUpdatedDeals() async {
+
     await Provider.of<UpdatedOffersProvider>(context, listen: false)
         .getUpdatedDeals()
         .then((value) {
@@ -109,12 +113,12 @@ class _LatestOffersState extends State<LatestOffers> {
                   checkEvenOrOddFirstTime = false;
                   if ((i % 2 == 0)) {
                     print("i is even");
-                    // dataAds.insert(i, i);
-                    // dataAds.insert(
-                    //     i,
-                    //     AdmobHelper.getBannerAd(
-                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                    //       ..load());
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
                     print("i is odd");
@@ -128,12 +132,12 @@ class _LatestOffersState extends State<LatestOffers> {
                   checkEvenOrOddFirstTime = false;
                   if ((checkEvenOrOdd % 2 == 0)) {
                     print("i is even");
-                    // dataAds.insert(i, i);
-                    // dataAds.insert(
-                    //     i,
-                    //     AdmobHelper.getBannerAd(
-                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                    //       ..load());
+                    dataAds.insert(i, i);
+                    dataAds.insert(
+                        i,
+                        AdmobHelper.getBannerAd(
+                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
                     print("i is odd");
@@ -224,35 +228,39 @@ class _LatestOffersState extends State<LatestOffers> {
         // Future.delayed(Duration(microseconds: 100));
         print(value.status);
         setState(() {
-          latestItems.addAll(value.data);
-          dataAds = List.from(latestItems);
-          // insert admob banner object in between the array list
-          // var rm = Random();
-          int loadAdd = (dataAds.length - value.data.length).toInt() + 4;
-          int loadAddStartFrom = (loadAdd - 4);
-          for (int i = loadAddStartFrom; i < dataAds.length; i++) {
-            //generate a random number from 2 to 18 (+ 1)
-            // var ranNumPosition = min + rm.nextInt(9);
-            //and add the banner ad to particular index of arraylist
-            if (i == (loadAdd)) {
-              loadAdd += 6;
-              if (i % 2 == 0) {
-                // dataAds.insert(
-                //     i,
-                //     AdmobHelper.getBannerAd(
-                //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                //       ..load());
-                // dataAds.insert(i, i);
+          if (value.data.isNotEmpty) {
+            latestItems.addAll(value.data);
+            dataAds = List.from(latestItems);
+            // insert admob banner object in between the array list
+            // var rm = Random();
+            int loadAdd = (dataAds.length - value.data.length).toInt() + 4;
+            int loadAddStartFrom = (loadAdd - 4);
+            for (int i = loadAddStartFrom; i < dataAds.length; i++) {
+              //generate a random number from 2 to 18 (+ 1)
+              // var ranNumPosition = min + rm.nextInt(9);
+              //and add the banner ad to particular index of arraylist
+              if (i == (loadAdd)) {
+                loadAdd += 6;
+                if (i % 2 == 0) {
+                  dataAds.insert(
+                      i,
+                      AdmobHelper.getBannerAd(
+                          adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                        ..load());
+                  dataAds.insert(i, i);
+                }
               }
             }
           }
-
+          else {
+            _showToast(message: "no more deals");
+          }
           print('totalItems: ${value.data}');
           isLoading = false;
           firstFetch = false;
         });
       }
-    });
+    }).catchError((Object error) => onError(error.toString()));
   }
 
   Future _loadData() async {
@@ -277,10 +285,18 @@ class _LatestOffersState extends State<LatestOffers> {
     final date2 = inputFormat.parse(date);
     if (date1.difference(date2).inMinutes < 59) {
       print("$index) productID ($productID) => ${date1.difference(date2).inMinutes} mins");
-      return "${date1.difference(date2).inMinutes} mins";
+      if(date1.difference(date2).inMinutes > 1) {
+        return "${date1.difference(date2).inMinutes} mins";
+      } else {
+        return "${date1.difference(date2).inMinutes} min";
+      }
     } else if (date1.difference(date2).inHours <= 24) {
       print("$index) productID ($productID) => ${date1.difference(date2).inHours} hours");
-      return "${date1.difference(date2).inHours} hours ";
+      if (date1.difference(date2).inHours > 1) {
+        return "${date1.difference(date2).inHours} hrs ";
+      } else {
+        return "${date1.difference(date2).inHours} hr ";
+      }
     } else if (date1.difference(date2).inDays > 1) {
       print("$index) productID ($productID) => ${date1.difference(date2).inDays} days");
       return "${date1.difference(date2).inDays} days";
@@ -351,8 +367,7 @@ class _LatestOffersState extends State<LatestOffers> {
                             itemBuilder: (context, index) {
                               if (dataAds[index] is Data) {
                                 Data listData = dataAds[index] as Data;
-                                date1 = DateTime.now().add(Duration(minutes: 30));
-
+                                date1 = DateTime.now();
                                 String difference =
                                     getDifference(date1: date1, index: index, title: listData.title, date: listData.updatedAt!, productID: listData.productId!);
                                 return Card(
@@ -398,7 +413,8 @@ class _LatestOffersState extends State<LatestOffers> {
                                                 builder: (context) =>
                                                     ProductDetails(
                                                         productID:
-                                                            listData.id!))),
+                                                            listData.id!,
+                                                    isLatestProductDetails: true,))),
                                         child: Center(
                                           child: Container(
                                             height: 100,
@@ -514,8 +530,9 @@ class _LatestOffersState extends State<LatestOffers> {
                                               //
                                               String url =
                                                   listData.url.toString();
-                                              if (await canLaunch(url))
-                                                await launch(url);
+
+                                              if (await canLaunch(Uri.encodeFull(url)))
+                                                await launch(Uri.encodeFull(url));
                                               else
                                                 // can't launch url, there is some error
                                                 throw "Could not launch $url";

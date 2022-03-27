@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginProvider with ChangeNotifier {
-  getLogin({email, password}) async {
+  getLogin({email, password, deviceToken}) async {
     // print(email);
     // print(password);
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -19,6 +19,7 @@ class LoginProvider with ChangeNotifier {
         body: ({
           "email": email,
           "password": password,
+          "device_token": deviceToken
         }),
       );
 
