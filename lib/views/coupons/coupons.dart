@@ -113,7 +113,7 @@ class _CouponCodesState extends State<CouponCodes> {
                       dataAds.insert(
                           i,
                           AdmobHelper.getBannerAd(
-                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                              adUnitId: 'ca-app-pub-6205870719398232/4986075123')
                             ..load());
                       checkEvenOrOdd = i + 2;
                     } else {
@@ -132,7 +132,7 @@ class _CouponCodesState extends State<CouponCodes> {
                       dataAds.insert(
                           i,
                           AdmobHelper.getBannerAd(
-                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                              adUnitId: 'ca-app-pub-6205870719398232/4986075123')
                             ..load());
                       checkEvenOrOdd = i + 2;
                     } else {
@@ -172,7 +172,7 @@ class _CouponCodesState extends State<CouponCodes> {
                       dataAds.insert(
                           i,
                           AdmobHelper.getBannerAd(
-                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                              adUnitId: 'ca-app-pub-6205870719398232/4986075123')
                             ..load());
                       checkEvenOrOdd = i + 2;
                     } else {
@@ -191,7 +191,7 @@ class _CouponCodesState extends State<CouponCodes> {
                       dataAds.insert(
                           i,
                           AdmobHelper.getBannerAd(
-                              adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                              adUnitId: 'ca-app-pub-6205870719398232/4986075123')
                             ..load());
                       checkEvenOrOdd = i + 2;
                     } else {

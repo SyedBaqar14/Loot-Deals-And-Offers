@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loot/config/constants.dart';
 import 'package:loot/provider/get_token_provider.dart';
 import 'package:loot/routes/routes_names.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'config/asset_config.dart';
@@ -26,36 +23,6 @@ class _SplashScreenState extends State<SplashScreen> {
   saveToken() async {
     await Provider.of<GetTokenProvider>(context, listen: false)
         .getToken(token: TemClass.token);
-
-    /*
-    final url = "https://bestonlineloot.com/send-notification?device_token=${TemClass.token}";
-
-    try {
-      final response = await http.post(Uri.parse(url),
-        headers: <String, String> {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer NmtjejlSSXFPOWtMZ2J2VVlBSnF6MFdGUG9OMzQrRVVib2UzaUFwUXQ1UnhKZjRRV3AyTWlaR2VFOEhBY1Freg=='
-        },
-      );
-
-      var result = json.decode(response.body);
-
-      print("result==================================>");
-      print(result);
-      print("result<==================================");
-
-      // if(result['status'] == "success") {
-      //   LatestDealsModel latestDealsModel = LatestDealsModel.fromJson(result);
-      //   return latestDealsModel;
-      // } else if(result['status'] != "success") {
-      //   return result['message'];
-      // } else {
-      //   return 'Internal server error';
-      // }
-    } catch (e) {
-      print(e);
-    }
-    */
   }
 
   bool? appLaunchedFirstTime;
@@ -140,8 +107,6 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       bottomNavigationBar: RichText(
         text: TextSpan(
-          // Note: Styles for TextSpans must be explicitly defined.
-          // Child text spans will inherit styles from parent
           style: new TextStyle(
             fontSize: 14.0,
             color: Colors.black,

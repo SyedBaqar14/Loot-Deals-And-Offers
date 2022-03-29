@@ -94,8 +94,6 @@ class _LatestOffersState extends State<LatestOffers> {
       } else if (value.status == "success") {
         print(value.status);
         setState(() {
-          // insert admob banner object in between the array list
-          // var rm = Random();
           if (firstFetch) {
             int checkEvenOrOdd = 0;
             bool checkEvenOrOddFirstTime = true;
@@ -117,7 +115,7 @@ class _LatestOffersState extends State<LatestOffers> {
                     dataAds.insert(
                         i,
                         AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                            adUnitId: 'ca-app-pub-6205870719398232/4986075123')
                           ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
@@ -136,7 +134,7 @@ class _LatestOffersState extends State<LatestOffers> {
                     dataAds.insert(
                         i,
                         AdmobHelper.getBannerAd(
-                            adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                            adUnitId: 'ca-app-pub-6205870719398232/4986075123')
                           ..load());
                     checkEvenOrOdd = i + 2;
                   } else {
@@ -146,69 +144,6 @@ class _LatestOffersState extends State<LatestOffers> {
               }
             }
           }
-
-          /*
-          else {
-            for (int x = 0; x < 8; x++) {
-              if (dataAds[x] is Data) {
-                Data listData = dataAds[x] as Data;
-                print("before: ${listData.productId}");
-                dataAds[x] = value.data[x];
-                Data listDataAfter = dataAds[x] as Data;
-                print("after: ${listDataAfter.productId}");
-              } else {
-                dataAds[x] = value.data[x];
-              }
-            }
-            int loadAdd = 2;
-            int checkEvenOrOdd = 0;
-            bool checkEvenOrOddFirstTime = true;
-            for (int i = 0; i < 8; i++) {
-              //generate a random number from 2 to 18 (+ 1)
-              // var ranNumPosition = min + rm.nextInt(9);
-              //and add the banner ad to particular index of arraylist
-              if (checkEvenOrOddFirstTime) {
-                if (i == loadAdd) {
-                  print("load add $loadAdd");
-                  loadAdd += 6;
-                  checkEvenOrOddFirstTime = false;
-                  if ((i % 2 == 0)) {
-                    print("i is even");
-                    // dataAds.insert(i, i);
-                    // dataAds.insert(
-                    //     i,
-                    //     AdmobHelper.getBannerAd(
-                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                    //       ..load());
-                    checkEvenOrOdd = i + 2;
-                  } else {
-                    print("i is odd");
-                  }
-                }
-              } else {
-                if (i == loadAdd) {
-                  checkEvenOrOddFirstTime = false;
-                  print("load add $loadAdd");
-                  loadAdd += 6;
-                  checkEvenOrOddFirstTime = false;
-                  if ((checkEvenOrOdd % 2 == 0)) {
-                    print("i is even");
-                    // dataAds.insert(i, i);
-                    // dataAds.insert(
-                    //     i,
-                    //     AdmobHelper.getBannerAd(
-                    //         adUnitId: 'ca-app-pub-3940256099942544/6300978111')
-                    //       ..load());
-                    checkEvenOrOdd = i + 2;
-                  } else {
-                    print("i is odd");
-                  }
-                }
-              }
-            }
-          }
-
-           */
           print('totalItems: ${value.data}');
           fetchData = false;
           isLoading = false;
@@ -225,7 +160,6 @@ class _LatestOffersState extends State<LatestOffers> {
       if (value is String) {
         print(value);
       } else if (value.status == "success") {
-        // Future.delayed(Duration(microseconds: 100));
         print(value.status);
         setState(() {
           if (value.data.isNotEmpty) {
@@ -236,16 +170,13 @@ class _LatestOffersState extends State<LatestOffers> {
             int loadAdd = (dataAds.length - value.data.length).toInt() + 4;
             int loadAddStartFrom = (loadAdd - 4);
             for (int i = loadAddStartFrom; i < dataAds.length; i++) {
-              //generate a random number from 2 to 18 (+ 1)
-              // var ranNumPosition = min + rm.nextInt(9);
-              //and add the banner ad to particular index of arraylist
               if (i == (loadAdd)) {
                 loadAdd += 6;
                 if (i % 2 == 0) {
                   dataAds.insert(
                       i,
                       AdmobHelper.getBannerAd(
-                          adUnitId: 'ca-app-pub-3940256099942544/6300978111')
+                          adUnitId: 'ca-app-pub-6205870719398232/4986075123')
                         ..load());
                   dataAds.insert(i, i);
                 }
@@ -269,8 +200,6 @@ class _LatestOffersState extends State<LatestOffers> {
     page += 1;
     print("pageNumber: $page");
     fetchDeals(pageNumber: page);
-
-    // await new Future.delayed(new Duration(seconds: 2));
 
     print("load more");
     // update data and loading status
@@ -536,13 +465,6 @@ class _LatestOffersState extends State<LatestOffers> {
                                               else
                                                 // can't launch url, there is some error
                                                 throw "Could not launch $url";
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             WebViewPage(
-                                              //               url: listData.url!,
-                                              //             )));
                                               print("launching");
                                             },
                                             child: Container(
@@ -572,7 +494,6 @@ class _LatestOffersState extends State<LatestOffers> {
                                   height: 1,
                                 );
                               } else {
-                                // if dataads[index] is object (ads) then show container with adWidget
                                 final Container adcontent = Container(
                                   child: AdWidget(
                                     ad: dataAds[index] as BannerAd,

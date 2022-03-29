@@ -77,7 +77,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             const SystemUiOverlayStyle(statusBarColor: appBarBackgroundColor),
         centerTitle: true,
         title: Text(
-          'Loot',
+          'bestonlineloot.com',
           style: TextStyle(color: kTextTitleColor),
         ),
         backgroundColor: appBarBackgroundColor,
@@ -288,7 +288,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       Container(
                         child: AdWidget(
-                          ad: AdmobHelper.getBannerAd(adUnitId: 'ca-app-pub-3940256099942544/6300978111')..load(),
+                          ad: AdmobHelper.getBannerAd(adUnitId: 'ca-app-pub-6205870719398232/5157982431')..load(),
                           key: UniqueKey(),
                         ),
                         height: 50,
