@@ -17,7 +17,7 @@ class GetTokenProvider with ChangeNotifier {
       final response = await http.get(Uri.parse(url),
         headers: <String, String> {
           'Accept': 'application/json',
-          'Authorization': 'Bearer NmtjejlSSXFPOWtMZ2J2VVlBSnF6MFdGUG9OMzQrRVVib2UzaUFwUXQ1UnhKZjRRV3AyTWlaR2VFOEhBY1Freg=='
+          'Authorization': 'Bearer xxx'
         },
       );
 
